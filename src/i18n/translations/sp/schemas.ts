@@ -1,0 +1,15 @@
+export default {
+  required: 'Requerido',
+  validUsername: 'Por favor, introduce un nombre de usuario válido',
+  minUsername: 'El nombre de usuario debe tener al menos 3 caracteres',
+  maxUsername: 'El nombre de usuario debe tener menos de 30 caracteres',
+  referralCode: 'El código de referencia debe tener 8 caracteres',
+  validCity: 'Por favor, introduce un nombre de ciudad válido',
+  digitsOnly: 'Debe contener solo dígitos',
+  minZipCode: 'Debe tener exactamente 5 dígitos',
+  maxZipCode: 'Debe tener exactamente 5 dígitos',
+  bidAmountMinError: 'La cantidad de la oferta debe ser mayor o igual a 1',
+  withdrawAmountMinError: 'La cantidad debe ser mayor o igual a 1',
+  withdrawAmountMaxError: 'El monto debe ser menor o igual a 999',
+  maxBio: 'La biografía debe tener menos de 140 caracteres.',
+};

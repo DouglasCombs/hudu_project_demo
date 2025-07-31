@@ -1,0 +1,28 @@
+export default {
+  myCourses: 'Mis Cursos',
+  congratulations: 'Felicidades',
+  youHaveSuccessfully: 'Has completado exitosamente tu curso',
+  claimMyBadge: 'Reclamar mi Insignia',
+  sorryYouFailed: '¡Lo siento! Fallaste tu examen final',
+  startTheCourse: 'Comenzar el curso',
+  startAgain: 'Comenzar de nuevo',
+  youFailedExam: 'Has fallado tu examen final',
+  sorry: 'Lo siento',
+  explore: 'Explorar',
+
+  topCategories: 'Categorías principales',
+  elevateYourCareer:
+    'Aprovecha al máximo la Plataforma HUDU a través de nuestros cursos cortos.',
+  unlockYourPotential: `- Descubra cómo elegir a los mejores DO-ers.\n- Explore los beneficios transformadores de HUDU.\n- Aprenda a redactar las mejores ofertas.`,
+  searchCourses: 'Buscar cursos',
+  startForFree: 'Comience gratis',
+  purchase: 'Compra',
+  slides: 'Diapositivas',
+  courseDetails: 'detalles del curso',
+  startCourse: 'Iniciar curso',
+  next: 'Próximo',
+  back: 'Atrás',
+  finalExam: 'Examen final',
+  lessons: 'Lecciones',
+  Topics: 'Temas',
+};

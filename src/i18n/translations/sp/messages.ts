@@ -1,0 +1,110 @@
+export default {
+  clearAllWarning: '¿Estás seguro de que quieres borrar todos los elementos?',
+  promoCodeIsValid: 'Tu código de promoción es válido',
+  addBidSuccessfully: 'Tu oferta se ha realizado con éxito',
+  editBidSuccessfully: 'Tu oferta se ha editado con éxito',
+  paymentSuccessfully: 'El pago se ha confirmado con éxito',
+  messages: 'Mensajes',
+  completeProfile: '¡El perfil no ha sido completado!',
+  completeYourProfile: 'Completa tu perfil',
+  completeStripe: 'Parece que aún no has configurado tu método de pago.',
+  takeMeThere: 'Configurar método de pago',
+  cantDeleteAccount:
+    'No puedes eliminar la cuenta porque tienes una oferta activa o un proyecto en curso.',
+  pleaseSelectOrder: 'Por favor seleccione un pedido.',
+  youCurrently: 'Actualmente no tengo reseñas.',
+  youCurrentlyDoer:
+    'Actualmente no tienes reseñas como Doer. ¡Completa un proyecto para obtener tu primera reseña como Doer! (¡y para ganar algo de dinero extra!)',
+  youCurrentlyLister:
+    'Actualmente no tienes reseñas como Lister.\n¡Publica y premia un proyecto para obtener tu primera reseña como Lister!',
+  firebase: {
+    emailExist:
+      'La dirección de correo electrónico ya está siendo utilizada por otra cuenta.',
+    userNotFound:
+      'No hay ningún registro de usuario que corresponda con el identificador proporcionado. Es posible que el usuario haya sido eliminado.',
+    requestFailed:
+      'Se ha producido un error de red (como un tiempo de espera, una conexión interrumpida o un host inalcanzable).',
+    cancelByUser: 'La operación fue cancelada por el usuario.',
+    existAccountWithDifferentCredential:
+      'Ya existe una cuenta con la misma dirección de correo electrónico pero con credenciales de inicio de sesión diferentes. Inicie sesión utilizando un proveedor asociado con esta dirección de correo electrónico.',
+  },
+  auth: {
+    success: 'Éxito',
+    emailSent: 'Correo electrónico enviado exitosamente',
+  },
+  errors: {
+    huduRestrictError: 'HUDU restringe tu contenido',
+    accessDenied: 'Acceso denegado',
+    activeBidsExist: 'Hay ofertas activas en esta publicación',
+    userAlreadyExist: 'El usuario ya existe',
+    userAlreadyFollowed: 'El usuario ya se sigue',
+    userAlreadyRemoved: 'El usuario ya se eliminó',
+    authenticationFailed: 'La autenticación falló',
+    commentNotFound: 'Comentario no encontrado',
+    differentIds: 'Los IDs son diferentes',
+    durationIsRequired: 'La duración es obligatoria',
+    failed: 'Falló',
+    hostNotFound: 'Host no encontrado',
+    invalidTimeRange: 'Rango de tiempo no válido',
+    invalidTimeSyntax: 'Sintaxis de tiempo no válida',
+    inProgressBidExist: 'Ya hay una oferta en progreso',
+    notAllowed: 'No permitido',
+    notEnoughData: 'Datos insuficientes',
+    notFound: 'No encontrado',
+    postNotFound: 'Publicación no encontrada',
+    sameId: 'Los IDs son iguales',
+    selfBidNotAllowed: 'No puedes hacer una oferta en tu propia publicación',
+    selfMessageNotAllowed: 'No puedes enviar mensajes a ti mismo',
+    timeConflict:
+      'El intervalo de tiempo solicitado entra en conflicto con una reserva existente',
+    unknownError: 'Error desconocido',
+    usernameAlreadyExist: 'El nombre de usuario ya existe',
+    acceptEmailPermission: 'Por favor, acepta los permisos de email',
+    cancelledByUser: 'Cancelado por el usuario',
+    signInInProgress: 'Inicio de sesión en progreso',
+    playServicesNotAvailable: 'Google Play services no disponibles',
+    noTokenReturned:
+      'Inicio de sesión con Apple fallido - no se ha devuelto ningún token de identidad',
+    deviceNotSupported:
+      'La autenticación con Apple no es compatible con tu dispositivo.',
+    couldNotObtainToken: 'No se pudo obtener el token de acceso',
+    selectAddressPrompt: 'Por favor, selecciona tu dirección',
+    selectOneItem: 'Por favor, selecciona uno de los elementos',
+    doersAccountDeleted: 'La cuenta de Doer ha sido eliminada',
+    enterValidCardNumber: 'Por favor, introduce detalles de tarjeta válidos',
+    cancelationError:
+      'Por favor, selecciona una razón o proporciona una descripción',
+    thisAccountHasBeenDeleted: 'Esta cuenta ha sido eliminada',
+    maxBidsError: '¡No puedes hacer más de 3 ofertas!',
+    manageMyBids: 'Administrar mis Ofertas',
+    InValidAmountForStripePayment: 'Cantidad no válida para el pago con Stripe',
+    verifyCodeNotValid: 'El código de verificación no es válido',
+    restrictError:
+      'Intentar completar proyectos fuera de la plataforma HUDU va en contra de los términos de servicio. Más intentos resultarán en suspensión de la plataforma.',
+    warning: 'Advertencia',
+    iUnderstand: 'Entiendo',
+    jdpError1: 'Tu nivel de experiencia no es suficiente. Por favor',
+    jdpError2: 'nivel',
+    userNotFound: 'Usuario no encontrado',
+  },
+  chooseBackgroundCheck: 'Selecciona el nivel de verificación de antecedentes',
+  emptyNotificationsTitle: 'Aún no hay notificaciones',
+  emptyNotificationsDescription: 'Te notificaremos cuando haya actividad',
+  emptyMessagesTitle: 'No hay mensajes para mostrar',
+  emptyMessagesDescription:
+    'Cuando eres parte de un proyecto común con otra persona, simplemente visita su perfil para acceder a un botón de mensajería dedicado.',
+  emptyBidsTitle: 'No hay ofertas para mostrar aún',
+  emptyBidsDescription: 'Te notificaremos cuando haya actividad',
+  emptyDataTitle: 'No hay información disponible',
+  emptyDataDescription:
+    'Por favor, vuelve más tarde o explora otras áreas de nuestra plataforma',
+  emptyQuestionsTitle: 'No hay preguntas en este momento',
+  emptyQuestionsDescription:
+    'Escribe aquí para proporcionar una respuesta general que se fijará en la parte superior de esta página para que todos los posibles colaboradores la vean.',
+  sentYouAMessage: 'te envió un mensaje sobre ',
+  clickHereToView: 'Click here to view.',
+  couponLimit: 'Este cupón ha alcanzado su límite de uso.',
+  timeConflict:
+    'Lo siento, el cupón ha caducado. Ten en cuenta que el cupón ya no es válido.',
+  notAllowed: 'Lo siento, este cupón ha sido completamente canjeado.',
+};

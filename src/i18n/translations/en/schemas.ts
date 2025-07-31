@@ -1,0 +1,15 @@
+export default {
+  required: 'Required',
+  validUsername: 'Please enter a valid username',
+  minUsername: 'Username must be at least 3 characters',
+  maxUsername: 'Username must be less than 30 characters',
+  referralCode: 'Referral Code must be 8 characters',
+  validCity: 'Please enter a valid city name',
+  digitsOnly: 'Must be only digits',
+  minZipCode: 'Must be exactly 5 digits',
+  maxZipCode: 'Must be exactly 5 digits',
+  bidAmountMinError: 'Bid amount must be greater than or equal to 1',
+  withdrawAmountMinError: 'Amount must be greater than or equal to 1',
+  withdrawAmountMaxError: 'Amount must be less than or equal to 999',
+  maxBio: 'Bio must be less than 140 characters',
+};

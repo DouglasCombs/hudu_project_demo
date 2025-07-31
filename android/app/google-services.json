@@ -1,0 +1,62 @@
+{
+  "project_info": {
+    "project_number": "854018447373",
+    "project_id": "aps-hudu-dev",
+    "storage_bucket": "aps-hudu-dev.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:854018447373:android:a86b77cbaed6a778561d44",
+        "android_client_info": {
+          "package_name": "com.heyhudu.HUDU"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "854018447373-2bl2mm88fkpvdm08g77p0ln6j9d4qo37.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.heyhudu.HUDU",
+            "certificate_hash": "75ff1690ec4795f920cfdd92498a992b506bc76e"
+          }
+        },
+        {
+          "client_id": "854018447373-vh7uoca5e4ndbcdct245oqn45q585fl4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.heyhudu.HUDU",
+            "certificate_hash": "2d130e877f1169fb22415ed7529b8b2e21ec8501"
+          }
+        },
+        {
+          "client_id": "854018447373-m8vh6ibpda42lj42u633ot9vdnoclnk1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBSuyZ3ARrQo2cEgyz7pBkMXssimrJG7mw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "854018447373-m8vh6ibpda42lj42u633ot9vdnoclnk1.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "854018447373-1su9uefjusok97luepkpeci6jvk8vlpp.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "org.reactjs.native.example.Hudu"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

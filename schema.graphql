@@ -1,0 +1,6027 @@
+"""
+The `@defer` directive may be provided for fragment spreads and inline fragments to inform the executor to delay the execution of the current fragment to indicate deprioritization of the current fragment. A query with `@defer` directive will cause the request to potentially return multiple responses, where non-deferred data is delivered in the initial response and data deferred is delivered in a subsequent response. `@include` and `@skip` take precedence over `@defer`.
+"""
+directive @defer(
+  """
+  If this argument label has a value other than null, it will be passed on to the result of this defer directive. This label is intended to give client applications a way to identify to which fragment a deferred result belongs to.
+  """
+  label: String
+
+  """
+  Deferred when true.
+  """
+  if: Boolean
+) on FRAGMENT_SPREAD | INLINE_FRAGMENT
+
+"""
+The `@stream` directive may be provided for a field of `List` type so that the backend can leverage technology such as asynchronous iterators to provide a partial list in the initial response, and additional list items in subsequent responses. `@include` and `@skip` take precedence over `@stream`.
+"""
+directive @stream(
+  """
+  If this argument label has a value other than null, it will be passed on to the result of this stream directive. This label is intended to give client applications a way to identify to which fragment a streamed result belongs to.
+  """
+  label: String
+
+  """
+  The initial elements that shall be send down to the consumer.
+  """
+  initialCount: Int! = 0
+
+  """
+  Streamed when true.
+  """
+  if: Boolean
+) on FIELD
+
+directive @authorize(
+  """
+  The name of the authorization policy that determines access to the annotated resource.
+  """
+  policy: String
+
+  """
+  Roles that are allowed to access the annotated resource.
+  """
+  roles: [String!]
+
+  """
+  Defines when when the resolver shall be executed.By default the resolver is executed after the policy has determined that the current user is allowed to access the field.
+  """
+  apply: ApplyPolicy! = BEFORE_RESOLVER
+) repeatable on SCHEMA | OBJECT | FIELD_DEFINITION
+
+"""
+A position is an array of numbers. There MUST be two or more elements. The first two elements are longitude and latitude, or easting and northing, precisely in that order and using decimal numbers. Altitude or elevation MAY be included as an optional third element.
+"""
+scalar Position
+
+interface GeoJSONInterface {
+  """
+  The geometry type of the GeoJson object
+  """
+  type: GeoJSONGeometryType!
+
+  """
+  The minimum bounding box around the geometry object
+  """
+  bbox: [Float]
+
+  """
+  The coordinate reference system integer identifier
+  """
+  crs: Int
+}
+
+input GeoJSONPointInput {
+  """
+  The geometry type of the GeoJson object
+  """
+  type: GeoJSONGeometryType
+
+  """
+  The "coordinates" field is a single position.
+  """
+  coordinates: Position
+
+  """
+  The coordinate reference system integer identifier
+  """
+  crs: Int
+}
+
+input GeoJSONMultiPointInput {
+  """
+  The geometry type of the GeoJson object
+  """
+  type: GeoJSONGeometryType
+
+  """
+  The "coordinates" field is an array of positions.
+  """
+  coordinates: [Position]
+
+  """
+  The coordinate reference system integer identifier
+  """
+  crs: Int
+}
+
+input GeoJSONLineStringInput {
+  """
+  The geometry type of the GeoJson object
+  """
+  type: GeoJSONGeometryType
+
+  """
+  The "coordinates" field is an array of two or more positions.
+  """
+  coordinates: [Position]
+
+  """
+  The coordinate reference system integer identifier
+  """
+  crs: Int
+}
+
+input GeoJSONMultiLineStringInput {
+  """
+  The geometry type of the GeoJson object
+  """
+  type: GeoJSONGeometryType
+
+  """
+  The "coordinates" field is an array of LineString coordinate arrays.
+  """
+  coordinates: [[Position]]
+
+  """
+  The coordinate reference system integer identifier
+  """
+  crs: Int
+}
+
+input GeoJSONPolygonInput {
+  """
+  The geometry type of the GeoJson object
+  """
+  type: GeoJSONGeometryType
+
+  """
+  The "coordinates" field MUST be an array of linear ring coordinate arrays. For Polygons with more than one of these rings, the first MUST be the exterior ring, and any others MUST be interior rings. The exterior ring bounds the surface, and the interior rings (if present) bound holes within the surface.
+  """
+  coordinates: [[Position]]
+
+  """
+  The coordinate reference system integer identifier
+  """
+  crs: Int
+}
+
+input GeoJSONMultiPolygonInput {
+  """
+  The geometry type of the GeoJson object
+  """
+  type: GeoJSONGeometryType
+
+  """
+  The "coordinates" field is an array of Polygon coordinate arrays.
+  """
+  coordinates: Coordinates
+
+  """
+  The coordinate reference system integer identifier
+  """
+  crs: Int
+}
+
+type GeoJSONPointType implements GeoJSONInterface {
+  """
+  The "coordinates" field is a single position.
+  """
+  coordinates: Position
+
+  """
+  The geometry type of the GeoJson object
+  """
+  type: GeoJSONGeometryType!
+
+  """
+  The minimum bounding box around the geometry object
+  """
+  bbox: [Float!]!
+
+  """
+  The coordinate reference system integer identifier
+  """
+  crs: Int!
+}
+
+type GeoJSONMultiPointType implements GeoJSONInterface {
+  """
+  The "coordinates" field is an array of positions.
+  """
+  coordinates: [Position]
+
+  """
+  The geometry type of the GeoJson object
+  """
+  type: GeoJSONGeometryType!
+
+  """
+  The minimum bounding box around the geometry object
+  """
+  bbox: [Float!]!
+
+  """
+  The coordinate reference system integer identifier
+  """
+  crs: Int!
+}
+
+type GeoJSONLineStringType implements GeoJSONInterface {
+  """
+  The "coordinates" field is an array of two or more positions.
+  """
+  coordinates: [Position]
+
+  """
+  The geometry type of the GeoJson object
+  """
+  type: GeoJSONGeometryType!
+
+  """
+  The minimum bounding box around the geometry object
+  """
+  bbox: [Float!]!
+
+  """
+  The coordinate reference system integer identifier
+  """
+  crs: Int!
+}
+
+type GeoJSONMultiLineStringType implements GeoJSONInterface {
+  """
+  The "coordinates" field is an array of LineString coordinate arrays.
+  """
+  coordinates: [Position]
+
+  """
+  The geometry type of the GeoJson object
+  """
+  type: GeoJSONGeometryType!
+
+  """
+  The minimum bounding box around the geometry object
+  """
+  bbox: [Float!]!
+
+  """
+  The coordinate reference system integer identifier
+  """
+  crs: Int!
+}
+
+type GeoJSONPolygonType implements GeoJSONInterface {
+  """
+  The "coordinates" field MUST be an array of linear ring coordinate arrays. For Polygons with more than one of these rings, the first MUST be the exterior ring, and any others MUST be interior rings. The exterior ring bounds the surface, and the interior rings (if present) bound holes within the surface.
+  """
+  coordinates: [[Position]]
+
+  """
+  The geometry type of the GeoJson object
+  """
+  type: GeoJSONGeometryType!
+
+  """
+  The minimum bounding box around the geometry object
+  """
+  bbox: [Float!]!
+
+  """
+  The coordinate reference system integer identifier
+  """
+  crs: Int!
+}
+
+type GeoJSONMultiPolygonType implements GeoJSONInterface {
+  """
+  The "coordinates" field is an array of Polygon coordinate arrays.
+  """
+  coordinates: Coordinates
+
+  """
+  The geometry type of the GeoJson object
+  """
+  type: GeoJSONGeometryType!
+
+  """
+  The minimum bounding box around the geometry object
+  """
+  bbox: [Float!]!
+
+  """
+  The coordinate reference system integer identifier
+  """
+  crs: Int!
+}
+
+enum GeoJSONGeometryType {
+  Point
+  MultiPoint
+  LineString
+  MultiLineString
+  Polygon
+  MultiPolygon
+  GeometryCollection
+}
+
+scalar Geometry
+
+type Query {
+  ip_getIps: String
+  user_login: ResponseBaseOfUsers
+  user_getProfile(userId: Int!): ResponseBaseOfUsers
+  user_isAddressExist(input: UserAddressIputInput): ResponseBaseOfBoolean
+  user_getUserAddresses(userId: Int!): ListResponseBaseOfUserAddress
+  user_getUserImages(userId: Int!): ListResponseBaseOfUserImage
+  user_getUsersForAdmin: ListResponseBaseOfUserDto
+  user_getUsers: ListResponseBaseOfUsers
+  user_getUsersSafe: ListResponseBaseOfUserDtoSafe
+  user_getActiveUsers: ListResponseBaseOfActiveUsers
+  user_usernameExist(userId: Int, username: String): ResponseBaseOfBoolean
+  user_getEmailTemplate(entityId: Int!): ResponseBaseOfEmailTemplate
+  user_getEmailTemplates: ListResponseBaseOfEmailTemplate
+  message_getGroups(userId: Int!): ListResponseBaseOfConversationDto
+  message_getGroupMembers(
+    conversationId: Int!
+  ): ListResponseBaseOfUserMessageGroup
+  message_getConversation(
+    currentUserId: Int
+    conversationId: Int!
+  ): ListResponseBaseOfMessages
+  message_getUserMessages(currentUserId: Int): ListResponseBaseOfConversationDto
+  message_getConversationForUser(
+    otherUserId: Int!
+    currentUserId: Int
+    projectId: Int
+  ): ResponseBaseOfConversations
+  message_getUserMessagesGroupedByUser(
+    currentUserId: Int
+  ): ListResponseBaseOfConversationDto
+  message_getConversationsProject(
+    userId: Int!
+  ): ListResponseBaseOfConversationsProjectDto
+  message_hasUnreadChat(
+    currentUserId: Int
+    projectId: Int
+  ): ResponseBaseOfBoolean
+  notification_getNotifications: ListResponseBaseOfNotification
+  project_getProject(projectId: Int!): SingleResponseBaseOfProjectDto
+  project_getProjects(
+    projectFilter: ProjectFilter
+    isMyBid: Boolean!
+    location: Position
+    projectOrderVms: [ProjectOrderVmInput]
+  ): ListResponseBaseOfProjectDto
+  project_getUserLikeProject(projectId: Int!): ResponseBaseOfProjectDto
+  project_getUserLikeProjects(
+    projectFilter: ProjectFilter
+    location: Position
+  ): ListResponseBaseOfProjectDto
+  project_getProjectImages(projectId: Int!): ListResponseBaseOfProjectImages
+  project_getQuestions(isIllegal: Boolean): ListResponseBaseOfQuestionsDto
+  project_getProjectCountByStatus(
+    listerId: Int!
+  ): ResponseBaseOfProjectCountByStatus
+  project_getProjectsGrouptedByCity: ListResponseBaseOfProjectsGrouptedByCityDto
+  project_getProjectsGrouptedByCityFromMapData: ListResponseBaseOfProjectsGrouptedByCityDto
+  project_getProjectIBidOnGroupedByStatus(
+    userId: Int!
+  ): ListResponseBaseOfGetProjectIBidOn
+  project_getEnthusiasticCistyState: ListResponseBaseOfEnthusiasticCistyState
+  project_getEnthusiasticCistyStatesGrouptedByState: ListResponseBaseOfEnthusiasticCistyStatesGrouptedByStateDto
+  bid_getBid(entityId: Int!): ResponseBaseOfBid
+  bid_getBids(
+    projectFilter: ProjectFilter
+    location: Position
+  ): ListResponseBaseOfBid
+  bid_getBidsInProjectDetailsTab(
+    projectId: Int!
+  ): ResponseBaseOfBidsInProjectDetailsTabDto
+  bid_getBidsOrdedByBidSatatus(
+    input: GetBidsOrdedByBidSatatusInput
+  ): ListResponseBaseOfBid
+  user_getReviews(
+    getReviewType: GetReviewType!
+    userId: Int!
+  ): ListResponseBaseOfReviewsDto
+  project_getBidCountByStatus(
+    huduerId: Int!
+  ): ResponseBaseOfDictionaryOfBidStatusAndInt32
+  bid_getAcceptBidDetails(
+    bidId: Int!
+    couponCode: String
+  ): ResponseBaseOfAcceptBid
+  payment_getAllPayments: ListResponseBaseOfPayment
+  payment_getPublishableKey: ResponseBaseOfAppSettingsDto
+  payment_hasStripeAccount: ResponseBaseOfBoolean
+  payment_getStripeAccountRequirements: ListResponseBaseOfStripeAccountRequirementsError
+  payment_getClientSecretOfProject(
+    projectId: Int!
+  ): ResponseBaseOfClientSecretDto
+  payment_getCustomersCards(limit: Long!): ListResponseBaseOfStripeCardDto
+  payment_getProjectPaymentDetails(
+    projectId: Int!
+  ): ResponseBaseOfProjectPaymentDetailsDto
+  payment_getProjectDoerPaymentDetails(
+    userId: Int!
+  ): ResponseBaseOfProjectDoerPaymentDetails
+  payment_getConnectUserBlance: ResponseBaseOfInt64
+  payment_getStripeConnectUserBlance: ResponseBaseOfInt64
+  map_getDistance(origin: String, destination: String): MappDto
+  coupon_getCoupon(couponId: Int!): ResponseBaseOfCoupon
+  coupon_getCoupons: ListResponseBaseOfCouponDto
+  coupon_isCouponValid(couponCode: String): ResponseBaseOfCouponValidResultDto
+  coupon_getActivities(couponId: Int!): ListResponseBaseOfCouponActivityDto
+  category_getCategory(entityId: Int!): ResponseBaseOfCategory
+  category_getCategories: ListResponseBaseOfCategoryDto
+  category_getPinedCategories: ListResponseBaseOfPinCategory
+  category_getCourseTopCategories: ListResponseBaseOfCourseTopCategoryDto
+  achievement_getAchievement: ResponseBaseOfAchievementDto
+  chatGpt_createChatUsingAzure(
+    projectTitle: String
+    projectDescription: String
+  ): ResponseBaseOfChatGptResponseDto
+  leaderBoard_getLeaderBoard(id: Int!): ResponseBaseOfLeaderBoard
+  leaderBoard_getLeaderBoards: ListResponseBaseOfLeaderBoard
+  leaderBoard_getUsersLeaderBoardRank(userId: Int!): ResponseBaseOfInt32
+  dashboard_getAdminDashboard(
+    startDate: DateTime
+    endDate: DateTime
+  ): ResponseBaseOfAdminDashboardDto
+  dashboard_getProjectAndUsersGrouptedByState(
+    startDate: DateTime!
+    endDate: DateTime!
+  ): ListResponseBaseOfProjectAndUsersGrouptedByStateDto
+  dashboard_getTotalBalancehistory: ListResponseBaseOfTotalBalanceFromStripe
+  flaggedContent_getFlaggedContent(id: Int!): ResponseBaseOfFlaggedContent
+  flaggedContent_getFlaggedContents: ListResponseBaseOfFlaggedContent
+  course_getCourse(entityId: Int!): SingleResponseBaseOfCourse
+  course_getCourses: ListResponseBaseOfCourse
+  course_getCoursesByAdmin: ListResponseBaseOfCourseDto
+  course_getCourseTranslate(entityId: Int!): SingleResponseBaseOfCourseTranslate
+  course_getCourseTranslates: ListResponseBaseOfCourseTranslate
+  Slide_getSlide(entityId: Int!): SingleResponseBaseOfSlide
+  Slide_getSlides: ListResponseBaseOfSlide
+  exam_getExam(entityId: Int!): SingleResponseBaseOfExam
+  exam_getExams: ListResponseBaseOfExam
+  courseQuestion_getCourseQuestion(
+    entityId: Int!
+  ): SingleResponseBaseOfCourseQuestion
+  courseQuestion_getCourseQuestions: ListResponseBaseOfCourseQuestion
+  courseQuestionAnswer_getCourseQuestionAnswer(
+    entityId: Int!
+  ): SingleResponseBaseOfCourseQuestionAnswer
+  courseQuestionAnswer_getCourseQuestionAnswers: ListResponseBaseOfCourseQuestionAnswer
+  userCourse_getUserCourse(entityId: Int!): SingleResponseBaseOfUserCourse
+  userCourse_getUserCourses: ListResponseBaseOfUserCourse
+  userCourse_getUserCompleteCourses(userId: Int!): ResponseBaseOfInt32
+  tazworkOrders_getOrders: ListResponseBaseOfTazworkOrder
+  tazworkOrders_getUserTazWorkRate(
+    userId: Int!
+  ): ResponseBaseOfUserTazWorkRateDto
+  tazworkProducts_getProducts: ListResponseBaseOfTazWorkProducts
+  badge_getBadge(entityId: Int!): ResponseBaseOfBadge
+  badge_getBadges: ListResponseBaseOfBadge
+  usersDocument_getUsersDocument(entityId: Int!): ResponseBaseOfUsersDocument
+  usersDocument_getUsersDocuments: ListResponseBaseOfUsersDocument
+  appRate_getAppRate(entityId: Int!): ResponseBaseOfAppRate
+  appRate_getAppRates: ListResponseBaseOfAppRate
+  flagText_getFlagText(entityId: Int!): ResponseBaseOfFlagText
+  flagText_getFlagTexts: ListResponseBaseOfFlagText
+  referall_getUsersWhomRegeisterdByReferallCode(
+    userId: Int!
+  ): ListResponseBaseOfRegisteredUserByReferall
+  referall_getReferallCodes: ListResponseBaseOfReferall
+  referall_getReferallInfo(userId: Int!): ResponseBaseOfReferallInfo
+}
+
+type Mutation {
+  user_signUp(email: String): ResponseBaseOfUsers
+  user_signUpReferallCode(
+    referallCode: String
+  ): ResponseBaseOfRegisteredUserByReferall
+  user_signUpByInviteCode(inviteCode: Int!): ResponseBaseOfUsers
+  user_createadmin(input: AdminInput): ResponseBaseOfUsers
+  user_updateProfile(userInput: UserInput): ResponseBaseOfUsers
+  user_addPhoneNumber(
+    phoneNumber: String
+    countryCode: String
+  ): ResponseBaseOfBoolean
+  user_confirmPhoneNumber(verificationCode: String): ResponseBaseOfBoolean
+  user_activationNotifications(
+    input: ActivationNotificationInput
+  ): ResponseBaseOfUsers
+  user_activationUser(isActive: Boolean!, userId: Int!): ResponseBaseOfUsers
+  user_verificationUser(isVerified: Boolean!, userId: Int!): ResponseBaseOfUsers
+  user_revokeAdmin(userId: Int!): ResponseBaseOfUsers
+  user_revokeAdmins(userIds: [Int!]): ListResponseBaseOfUsers
+  user_DeleteUser(userId: Int): ResponseBaseOfUsers
+  user_UpdateLastSeen: ResponseBaseOfUsers
+  user_addUserTags(tags: [String]): ResponseBaseOfUsers
+  user_addAddressesToUser(
+    input: [UserAddressIputInput]
+  ): ListResponseBaseOfUserAddress
+  user_editAddressesOfUser(
+    input: UserAddressIputInput
+  ): ResponseBaseOfUserAddress
+  user_removeAddressFromUser(userAddressIds: [Int!]): ResponseBaseOfBoolean
+  user_addImage(input: [UserImageInput]): ListResponseBaseOfUserImage
+  user_editImage(input: UserImageInput): ResponseBaseOfUserImage
+  user_removeImage(userImageids: [Int!]): ResponseBaseOfBoolean
+  user_sendEmail(email: EmailInput): ResponseStatus!
+  user_addEmailTemplate(
+    emailTemplateInput: EmailTemplateInput
+  ): ResponseBaseOfEmailTemplate
+  user_addUsersActivity: ResponseBaseOfBoolean
+  message_createMessage(messageInput: MessageInput): ResponseBaseOfMessages
+  message_createGroupMessage(messageInput: MessageInput): ResponseBaseOfMessages
+  message_createConversation(
+    input: CreateConversationInput
+  ): ResponseBaseOfConversations
+  message_updateMessage(text: String, messageId: Int!): ResponseBaseOfMessages
+  message_removeConversation(conversationId: Int!): ResponseBase
+  message_deleteMessage(messageId: Int!): ResponseBaseOfMessages
+  notification_addNotification(
+    notifications: [NotificationInputsInput]
+  ): ListResponseBaseOfNotification
+  notification_deleteNotification(
+    notificationId: Int!
+  ): ResponseBaseOfNotification
+  notification_readNotification(
+    notificationId: Int!
+  ): ResponseBaseOfNotification
+  project_addProject(addProjectInput: AddProjectInput): ResponseBaseOfProject
+  project_editProjectByAdmin(
+    projectId: Int!
+    description: String
+  ): ResponseBaseOfProject
+  project_editProject(editProjectInput: EditProjectInput): ResponseBaseOfProject
+  project_deleteProject(projectId: Int!): ResponseBaseOfProject
+  project_addImageToProject(
+    imageAddress: String
+    projectId: Int!
+    alt: String
+  ): ResponseBaseOfProjectImages
+  project_editProjectImage(
+    input: EditProjectImagesInput
+  ): ResponseBaseOfProjectImages
+  project_removeImageFromProject(imageId: Int!): ResponseBaseOfBoolean
+  project_finisheProject(projectId: Int!): ResponseBaseOfProject
+  project_faileProject(projectId: Int!): ResponseBaseOfProject
+  project_cancellProject(
+    projectId: Int!
+    cancelProjectStatus: CancelProjectStatus
+    cancellationReason: String
+  ): ResponseBaseOfProject
+  project_CancellProjectRequestConfirmationByAdmin(
+    projectId: Int!
+    cancellRequestStatus: CancellRequestStatus!
+  ): ResponseBaseOfProject
+  project_reopenProject(projectId: Int!): ResponseBaseOfProject
+  project_like(projectId: Int!): ResponseBaseOfUserLikeProject
+  project_unlike(projectId: Int!, userId: Int): ResponseBaseOfUserLikeProject
+  project_unLikeAll: ListResponseBaseOfUserLikeProject
+  project_addQuestion(questionInput: QuestionInput): ResponseBaseOfQuestion
+  project_editQuestion(input: EditQuestionInput): ResponseBaseOfQuestion
+  project_deleteQuestion(questionId: Int!): ResponseBaseOfQuestion
+  project_reportQuestion(
+    input: ReportQuestionInput
+  ): ResponseBaseOfReportQuestion
+  project_voteQuestion(questionId: Int!): ResponseBaseOfUserVoteQuestion
+  project_addEnthusiasticCistyState(
+    input: AddEnthusiasticCistyStateInput
+  ): ResponseBaseOfEnthusiasticCistyState
+  user_shareToSocial: ResponseBaseOfBoolean
+  bid_addBid(bidInput: BidInput): ResponseBaseOfBid
+  bid_editBid(editBidInput: EditBidInput): ResponseBaseOfBid
+  bid_editBidByAdmin(input: EditBidByAdminInput): ResponseBaseOfBid
+  bid_deleteBid(bidId: Int!): ResponseBaseOfBid
+  project_addFeedBack(feedbackInput: FeedbackInput): ResponseBaseOfBid
+  bid_editFeedBackByAdmin(
+    editFeedbackByAdminInput: EditFeedbackByAdminInput
+  ): ResponseBaseOfBid
+  bid_acceptBid(bidId: Int!, couponCode: String): ResponseBaseOfAcceptBid
+  bid_rejectBid(bidId: Int!): ResponseBaseOfBid
+  bid_cancellBid(
+    bidId: Int!
+    cancelBidType: CancelBidType
+    cancellationReason: String
+  ): ResponseBaseOfBid
+  bid_cancellBidRequestConfirmationByAdmin(
+    bidId: Int!
+    cancellRequestStatus: CancellRequestStatus!
+    affectedToHighestProjectCompletionRate: Boolean!
+  ): ResponseBaseOfBid
+  bid_activateBid(bidId: Int!): ResponseBaseOfBid
+  bid_huduFinsihedProject(bidId: Int!): ResponseBaseOfBid
+  bid_addWorkingHours(bidId: Int!, workedHours: Float!): ResponseBaseOfBid
+  bid_withdrawBidForHudu(bidId: Int!): ResponseBaseOfBid
+  payment_isTransferEnabled: ResponseBaseOfBoolean
+  payment_onboardUserInStripeConnect(isByApp: Boolean!): ResponseBaseOfString
+  payment_createCard(input: StripeCardInput): ResponseBaseOfBoolean
+  payment_createEphemeralKey: ResponseBaseOfEphemeralKeyDto
+  payment_paymentIntent(input: PaymentIntentInput): ResponseBaseOfString
+  payment_widthrawlReferallIncome: ResponseBaseOfBoolean
+  payment_widthrawUsersWallet(
+    amount: Decimal!
+    widthrawWalletType: WidthrawWalletType!
+  ): ResponseBaseOfBoolean
+  payment_payoutForConnects(amount: Decimal!): ResponseBaseOfString
+  coupon_addCoupon(input: CouponInput): ResponseBaseOfCoupon
+  coupon_editCoupon(input: CouponInput): ResponseBaseOfCoupon
+  coupon_deleteCoupon(categoryId: Int!): ResponseBaseOfCoupon
+  category_addCategory(input: CategoryInput): ListResponseBaseOfCategory
+  category_editCategory(input: CategoryInput): ResponseBaseOfCategory
+  category_deleteCategory(categoryId: Int!): ResponseBaseOfCategory
+  category_pinCategories(categoryIds: [Int!]): ListResponseBaseOfPinCategory
+  category_pinCategory(categoryId: Int!): ResponseBaseOfPinCategory
+  category_unPinCategory(categoryId: Int!): ResponseBaseOfPinCategory
+  referall_generateReferallCode: ResponseBaseOfString
+  course_createCourse(courseInput: CourseInput): ResponseBaseOfCourse
+  course_updateCourse(
+    courseInput: CourseInput
+    entityId: Int!
+  ): ResponseBaseOfCourse
+  course_publishCourse(entityId: Int!): ResponseBaseOfCourse
+  course_deleteCourse(entityId: Int!): ResponseBaseOfCourse
+  course_publishCourseSpanishTranslateStatus(
+    entityId: Int!
+  ): ResponseBaseOfCourse
+  course_createCourseTranslate(
+    input: CourseTranslateInput
+  ): ResponseBaseOfCourseTranslate
+  course_createCourseTranslateAll(
+    courseId: Int!
+    languageType: LanguageType!
+  ): ListResponseBaseOfCourseTranslate
+  course_updateCourseTranslate(
+    entityId: Int!
+    title: String
+    content: String
+    mediaUrl: String
+  ): ResponseBaseOfCourseTranslate
+  slide_createSlide(slideInput: SlideInput): ResponseBaseOfSlide
+  slide_updateSlide(slideInput: SlideInput, entityId: Int!): ResponseBaseOfSlide
+  slide_deleteSlide(entityId: Int!): ResponseBaseOfSlide
+  exam_createExam(courseId: Int!): ResponseBaseOfExam
+  courseQuestionAnswer_updateCourseQuestionAnswer(
+    value: String
+    answerId: Int!
+  ): ResponseBaseOfCourseQuestionAnswer
+  courseQuestionAnswer_changeCorrectAnswer(
+    correctAnswerId: Int!
+  ): ResponseBaseOfCourseQuestionAnswer
+  CourseQuestion_updateCourseQuestion(
+    input: CourseQuestionInput
+    answerInputs: [CourseQuestionAnswerInput]
+  ): ResponseBaseOfCourseQuestion
+  CourseQuestion_CreateCourseQuestion(
+    input: CourseQuestionInput
+    answerInputs: [CourseQuestionAnswerInput]
+  ): ResponseBaseOfCourseQuestion
+  CourseQuestion_DeleteCourseQuestion(
+    entityId: Int!
+  ): ResponseBaseOfCourseQuestion
+  userCourse_startFreeCourse(courseId: Int!): ResponseBaseOfUserCourse
+  userCourse_startPaidCourse(courseId: Int!): ResponseBaseOfString
+  userCourse_readSlide(
+    userCourseId: Int!
+    slideId: Int!
+  ): ResponseBaseOfUserCourse
+  userCourse_finishExam(
+    userCourseId: Int!
+    courseQuestionAnswersIds: [Int!]
+  ): ResponseBaseOfUserCourse
+  userCourse_restartCourse(courseId: Int!): ResponseBaseOfUserCourse
+  usersDocument_addUsersDocument(
+    input: UsersDocumentInput
+  ): ResponseBaseOfUsersDocument
+  usersDocument_editUsersDocument(
+    input: UsersDocumentInput
+  ): ResponseBaseOfUsersDocument
+  usersDocument_deleteUsersDocument(
+    documentId: Int!
+  ): ResponseBaseOfUsersDocument
+  translator_translate(input: TranslateInput): ResponseBaseOfString
+  appRate_addAppRate(input: AppRateInput): ResponseBaseOfAppRate
+  tazwork_submitOrder(productId: Int!): ResponseBaseOfString
+  tazwork_submitOrderByAdmin(
+    userId: Int!
+    productId: Int!
+  ): ResponseBaseOfSubmitOrderDto
+  flaggedContent_editFlaggedContent(
+    input: FlaggedContentInput
+  ): ResponseBaseOfFlaggedContent
+  flaggedContent_deleteFlaggedContent(
+    categoryId: Int!
+  ): ResponseBaseOfFlaggedContent
+  flagText_addFlagText(input: FlagTextInput): ResponseBaseOfFlagText
+  flagText_deleteFlagText(entityId: Int!): ResponseBase
+  flagText_editFlagText(input: FlagTextInput): ResponseBaseOfFlagText
+}
+
+type Subscription {
+  messageAdded(userId: Int!): Messages
+  subscribeToGroupMessageAdded(userId: Int!): Messages
+  notificationAdded(userId: Int!): Notification
+}
+
+type ActiveUsers {
+  activeUserCount: Int!
+  activeUsersId: String
+  id: Int!
+  isDeleted: Boolean!
+  createdDate: DateTime!
+}
+
+type AppRate {
+  rate: Int!
+  text: String
+  userId: Int!
+  user: Users
+  id: Int!
+  isDeleted: Boolean!
+  createdDate: DateTime!
+}
+
+type Badge {
+  badgeType: BadgeType!
+  badgeLevel: BadgeLevel!
+  description: String
+  userId: Int!
+  user: Users
+  id: Int!
+  isDeleted: Boolean!
+  createdDate: DateTime!
+}
+
+type Bid {
+  isListerDeletedAccount: Boolean!
+  listerDeleteAccountDate: DateTime!
+  isHuduDeletedAccount: Boolean!
+  huduDeleteAccountDate: DateTime!
+  hasPayment: Boolean!
+  bidStatus: BidStatus!
+  cancellRequestStatus: CancellRequestStatus
+  latestCancellRequestDate: DateTime
+  latestCancellRequestConfirmationDate: DateTime
+  cancelBidType: CancelBidType
+  cancellationReason: String
+  affectedToHighestProjectCompletionRate: Boolean
+  awardDate: DateTime
+  huduFinishedProjectDate: DateTime
+  amount: Float!
+  description: String
+  hudusComment: String
+  hudusRate: String
+  isHuduCommented: Boolean!
+  listersComment: String
+  listersRate: String
+  isListerCommented: Boolean!
+  huduerWorkedHours: Float
+  hudu: Users
+  huduId: Int!
+  lister: Users
+  listerId: Int!
+  project: Project
+  projectId: Int!
+  payments: [Payment]
+  notifications: [Notification]
+  bidAnswerToQuestions: [BidAnswerToQuestion]
+  id: Int!
+  isDeleted: Boolean!
+  createdDate: DateTime!
+}
+
+type BidAnswerToQuestion {
+  question: String
+  answer: String
+  bid: Bid
+  bidId: Int!
+  id: Int!
+  isDeleted: Boolean!
+  createdDate: DateTime!
+}
+
+type Category {
+  text: String
+  spanishText: String
+  userId: Int!
+  user: Users
+  parentId: Int
+  parent: Category
+  courses: [Course]
+  id: Int!
+  isDeleted: Boolean!
+  createdDate: DateTime!
+}
+
+type Conversations {
+  firstUserId: Int
+  secondUserId: Int
+  isFirstUserDeletedAccount: Boolean!
+  firstUserDeleteAccountDate: DateTime!
+  isSecondUserDeletedAccount: Boolean!
+  secondUserDeleteAccountDate: DateTime!
+  subject: String
+  project: Project
+  projectId: Int
+  isGroup: Boolean!
+  groupImage: String
+  groupName: String
+  groupDescription: String
+  userGroups: [UserMessageGroup]
+  firstUser: Users
+  secondUser: Users
+  firstUnreadCount: Int!
+  secondUnreadCount: Int!
+  latestMessageDate: DateTime!
+  messages: [Messages]
+  id: Int!
+  isDeleted: Boolean!
+  createdDate: DateTime!
+}
+
+type Coupon {
+  title: String
+  code: String
+  expirationDate: DateTime!
+  percent: Float!
+  maximumDiscountAmount: Float
+  userlimits: Int!
+  admin: Users
+  adminId: Int!
+  isActive: Boolean!
+  userUsedCoupons: [UserUsedCoupon]
+  id: Int!
+  isDeleted: Boolean!
+  createdDate: DateTime!
+}
+
+type Course {
+  title: String
+  description: String
+  mediaUrl: String
+  mediaType: MediaType!
+  courseStatus: CourseStatus!
+  spanishTranslateStatus: SpanishTranslateStatus!
+  isFree: Boolean!
+  price: Float!
+  categoryId: Int!
+  category: Category
+  slides: [Slide]
+  userCourses: [UserCourse]
+  exam: Exam
+  courseTranslates: [CourseTranslate]
+  id: Int!
+  isDeleted: Boolean!
+  createdDate: DateTime!
+}
+
+type CourseQuestion {
+  number: Int!
+  questionContent: String
+  examId: Int!
+  exam: Exam
+  answers: [CourseQuestionAnswer]
+  courseTranslates: [CourseTranslate]
+  id: Int!
+  isDeleted: Boolean!
+  createdDate: DateTime!
+}
+
+type CourseQuestionAnswer {
+  value: String
+  isCorrect: Boolean!
+  courseQuestionId: Int!
+  courseQuestion: CourseQuestion
+  courseTranslates: [CourseTranslate]
+  id: Int!
+  isDeleted: Boolean!
+  createdDate: DateTime!
+}
+
+type CourseTranslate {
+  languageType: LanguageType!
+  title: String
+  content: String
+  mediaUrl: String
+  courseId: Int
+  course: Course
+  slideId: Int
+  slide: Slide
+  courseQuestionId: Int
+  courseQuestion: CourseQuestion
+  courseQuestionAnswerId: Int
+  courseQuestionAnswer: CourseQuestionAnswer
+  id: Int!
+  isDeleted: Boolean!
+  createdDate: DateTime!
+}
+
+type EmailTemplate {
+  email: String
+  text: String
+  spanishText: String
+  emailTemplateType: EmailTemplateType!
+  id: Int!
+  isDeleted: Boolean!
+  createdDate: DateTime!
+}
+
+type EnthusiasticCistyState {
+  state: String
+  city: String
+  userId: Int!
+  user: Users
+  id: Int!
+  isDeleted: Boolean!
+  createdDate: DateTime!
+}
+
+type Exam {
+  courseId: Int!
+  course: Course
+  courseQuestions: [CourseQuestion]
+  id: Int!
+  isDeleted: Boolean!
+  createdDate: DateTime!
+}
+
+type FlaggedContent {
+  text: String
+  flaggedContentType: FlaggedContentType!
+  project: Project
+  projectId: Int
+  userProfile: Users
+  userProfileId: Int
+  projectImage: ProjectImages
+  projectImageId: Int
+  question: Question
+  questionId: Int
+  bid: Bid
+  bidId: Int
+  userId: Int!
+  user: Users
+  id: Int!
+  isDeleted: Boolean!
+  createdDate: DateTime!
+}
+
+type FlagText {
+  text: String
+  id: Int!
+  isDeleted: Boolean!
+  createdDate: DateTime!
+}
+
+type LeaderBoard {
+  leaderBoardType: LeaderBoardType!
+  point: Int!
+  userId: Int!
+  user: Users
+  id: Int!
+  isDeleted: Boolean!
+  createdDate: DateTime!
+}
+
+type MapData {
+  city: String
+  cityAscii: String
+  stateId: String
+  stateName: String
+  countyFips: Float!
+  lat: Float!
+  lng: Float!
+  zips: String
+  id: Int!
+  isDeleted: Boolean!
+  createdDate: DateTime!
+}
+
+type Messages {
+  messageType: MessageTypes!
+  photoUrl: String
+  isEdited: Boolean!
+  notifications: [Notification]
+  createdAt: DateTime!
+  conversationId: Int!
+  conversation: Conversations
+  senderId: Int!
+  sender: Users
+  text: String
+  id: Int!
+  isDeleted: Boolean!
+  createdDate: DateTime!
+}
+
+type Notification {
+  sender: Users
+  senderId: Int
+  isDeletedAccount: Boolean!
+  deleteAccountDate: DateTime!
+  title: String
+  description: String
+  spanishTitle: String
+  spanishDescription: String
+  isReaded: Boolean!
+  notificationType: NotificationType!
+  project: Project
+  projectId: Int
+  bid: Bid
+  bidId: Int
+  question: Question
+  questionId: Int
+  messages: Messages
+  messagesId: Int
+  userId: Int!
+  user: Users
+  id: Int!
+  isDeleted: Boolean!
+  createdDate: DateTime!
+}
+
+type Payment {
+  isDeletedAccount: Boolean!
+  deleteAccountDate: DateTime!
+  stripeChargeOrTransferOrPaymentIntentId: String
+  paymentStatus: PaymentStatus!
+  paymentConfirmationStatus: PaymentConfirmationStatus!
+  bid: Bid
+  bidId: Int
+  isCancellBid: Boolean!
+  project: Project
+  projectId: Int
+  userCourse: UserCourse
+  userCourseId: Int
+  tazworkOrderId: Int
+  tazworkOrder: TazworkOrder
+  createdAt: DateTime!
+  amount: Float!
+  user: Users
+  userId: Int!
+  id: Int!
+  isDeleted: Boolean!
+  createdDate: DateTime!
+}
+
+type PinCategory {
+  category: Category
+  categoryId: Int!
+  userId: Int!
+  user: Users
+  id: Int!
+  isDeleted: Boolean!
+  createdDate: DateTime!
+}
+
+type Project {
+  isExpiredProjectDeadLineForListerToAcceptABid: Boolean!
+  isExpiredProjectDeadLineForDuerToAddBid: Boolean!
+  isDeletedAccount: Boolean!
+  deleteAccountDate: DateTime!
+  projectStatus: ProjectStatus!
+  title: String
+  description: String
+  duration: String
+  availability: Availability!
+  addressTitle: String
+  streetAddress: String
+  city: String
+  state: String
+  cover: String
+  backgroundCheckTypeForDoer: BackgroundCheckTypeForDoer
+  projectDeadLine: DateTime!
+  startDate: DateTime!
+  endDate: DateTime!
+  latestPaymentDateTime: DateTime
+  longitude: Float!
+  latitude: Float!
+  zipCode: String
+  cancellRequestStatus: CancellRequestStatus
+  latestCancellRequestDate: DateTime
+  latestCancellRequestConfirmationDate: DateTime
+  cancelProjectStatus: CancelProjectStatus
+  cancellationReason: String
+  category: Category
+  categoryId: Int
+  bids: [Bid]
+  questions: [Question]
+  projectImages: [ProjectImages]
+  userLikeProjects: [UserLikeProject]
+  notifications: [Notification]
+  conversations: [Conversations]
+  registeredUserByReferalls: [RegisteredUserByReferall]
+  projectQuestions: [ProjectQuestion]
+  flaggedContents: [FlaggedContent]
+  userId: Int!
+  user: Users
+  id: Int!
+  isDeleted: Boolean!
+  createdDate: DateTime!
+}
+
+type ProjectImages {
+  imageAddress: String
+  alt: String
+  project: Project
+  projectId: Int!
+  id: Int!
+  isDeleted: Boolean!
+  createdDate: DateTime!
+}
+
+type Question {
+  isDeletedAccount: Boolean!
+  deleteAccountDate: DateTime!
+  text: String
+  isIllegal: Boolean!
+  isPin: Boolean!
+  upVote: Int!
+  isEdited: Boolean!
+  editedDate: DateTime!
+  parentQuestion: Question
+  parentId: Int
+  childrenQuestions: [Question]
+  project: Project
+  projectId: Int!
+  userId: Int!
+  user: Users
+  id: Int!
+  isDeleted: Boolean!
+  createdDate: DateTime!
+}
+
+type Referall {
+  referallCode: String
+  userId: Int!
+  user: Users
+  id: Int!
+  isDeleted: Boolean!
+  createdDate: DateTime!
+}
+
+type RegisteredUserByReferall {
+  referallCode: String
+  amount: Float
+  hasFinishedProject: Boolean!
+  isPaidToUser: Boolean!
+  referalOwner: Users
+  referalOwnerId: Int!
+  referalUser: Users
+  referalUserId: Int!
+  project: Project
+  projectId: Int
+  id: Int!
+  isDeleted: Boolean!
+  createdDate: DateTime!
+}
+
+type ReportQuestion {
+  text: String
+  reason: String
+  reporterId: Int!
+  reporter: Users
+  question: Question
+  questionId: Int!
+  id: Int!
+  isDeleted: Boolean!
+  createdDate: DateTime!
+}
+
+type Slide {
+  title: String
+  description: String
+  mediaUrl: String
+  mediaType: MediaType!
+  order: Int!
+  courseId: Int!
+  course: Course
+  userCourses: [UserCourse]
+  courseTranslates: [CourseTranslate]
+  id: Int!
+  isDeleted: Boolean!
+  createdDate: DateTime!
+}
+
+type TazworkOrder {
+  userId: Int!
+  productId: Int!
+  user: Users
+  product: TazWorkProducts
+  orderGuid: String
+  quickappApplicantLink: String
+  orderStatus: OrderStatus!
+  payment: Payment
+  id: Int!
+  isDeleted: Boolean!
+  createdDate: DateTime!
+}
+
+type TazWorkProducts {
+  clientProductGuid: String
+  productGuid: String
+  productName: String
+  alternateName: String
+  productType: ProductType!
+  price: Float!
+  tazworkOrders: [TazworkOrder]
+  id: Int!
+  isDeleted: Boolean!
+  createdDate: DateTime!
+}
+
+type TotalBalanceFromStripe {
+  amount: Float
+  id: Int!
+  isDeleted: Boolean!
+  createdDate: DateTime!
+}
+
+type UserAddress {
+  addressTitle: String
+  streetAddress: String
+  city: String
+  state: String
+  longitude: Float!
+  latitude: Float!
+  zipCode: String
+  userId: Int!
+  user: Users
+  id: Int!
+  isDeleted: Boolean!
+  createdDate: DateTime!
+}
+
+type UserCourse {
+  userId: Int!
+  user: Users
+  courseId: Int!
+  course: Course
+  currentSlideId: Int!
+  currentSlide: Slide
+  isSlidesEnded: Boolean!
+  hasCertificate: Boolean!
+  completedPercent: Float!
+  status: UserCourseStatus!
+  payment: Payment
+  id: Int!
+  isDeleted: Boolean!
+  createdDate: DateTime!
+}
+
+type UserImage {
+  imageAddress: String
+  userId: Int!
+  user: Users
+  id: Int!
+  isDeleted: Boolean!
+  createdDate: DateTime!
+}
+
+type UserLikeProject {
+  isDeletedAccount: Boolean!
+  deleteAccountDate: DateTime!
+  projectId: Int!
+  project: Project
+  userId: Int!
+  user: Users
+  id: Int!
+  isDeleted: Boolean!
+  createdDate: DateTime!
+}
+
+type UserMessageGroup {
+  conversationId: Int!
+  conversation: Conversations
+  isAdmin: Boolean!
+  unreadCount: Int!
+  userId: Int!
+  user: Users
+  id: Int!
+  isDeleted: Boolean!
+  createdDate: DateTime!
+}
+
+type Users {
+  isPhoneNumberVerified: Boolean!
+  isUserUsedReferallDiscount: Boolean!
+  wallet: Decimal
+  isVerified: Boolean!
+  isDeletedAccount: Boolean!
+  deleteAccountDate: DateTime!
+  stripeAccountId: String
+  stripeCustomerId: String
+  userName: String
+  lastSeen: DateTime!
+  userTypes: UserTypes!
+  imageAddress: String
+  firstName: String
+  lastName: String
+  bio: String
+  streetAddress: String
+  city: String
+  state: String
+  phoneNumber: String
+  phoneNumberConfirmed: Boolean!
+  isActive: Boolean!
+  inviteCode: Int!
+  inviteCodeExpireDate: DateTime!
+  isSignUpDone: Boolean!
+  longitude: Float!
+  latitude: Float!
+  zipCode: String
+  projectNotification: Boolean
+  bidNotification: Boolean
+  chatNotification: Boolean
+  questionNotification: Boolean
+  isUsedReferallDiscount: Boolean!
+  referallDiscountProjectId: Int
+  asHuduRates: Float
+  asListerRates: Float
+  averageRate: Float
+  highestProjectCompletionRate: Float
+  listersWhoRatedToMeCount: Int!
+  huduersWhoRatedToMeCount: Int!
+  averHuduerWorkedHours: Float
+  lastActivityDate: DateTime
+  lastLoginDate: DateTime
+  lastBidDate: DateTime
+  lastListingDate: DateTime
+  lastCommentDate: DateTime
+  leaderBoardPoint: Int!
+  languageType: LanguageType!
+  totalRewardedFromReferall: Float!
+  earnPtsFromReferall: Float!
+  userUsedCoupons: [UserUsedCoupon]
+  userImages: [UserImage]
+  userCourses: [UserCourse]
+  tazworkOrders: [TazworkOrder]
+  applicantGuid: String
+  backgroundCheckStatus: BackgroundCheckStatus!
+  externalId: String
+  email: String
+  id: Int!
+  isDeleted: Boolean!
+  createdDate: DateTime!
+}
+
+type UsersActivityDay {
+  userId: Int!
+  user: Users
+  id: Int!
+  isDeleted: Boolean!
+  createdDate: DateTime!
+}
+
+type UsersDocument {
+  fileName: String
+  file: String
+  userId: Int!
+  user: Users
+  id: Int!
+  isDeleted: Boolean!
+  createdDate: DateTime!
+}
+
+type UsersTag {
+  text: String
+  userId: Int!
+  user: Users
+  id: Int!
+  isDeleted: Boolean!
+  createdDate: DateTime!
+}
+
+type UserUsedCoupon {
+  coupon: Coupon
+  couponId: Int!
+  bid: Bid
+  bidId: Int
+  discountedAmount: Float
+  percent: Float
+  userId: Int!
+  user: Users
+  id: Int!
+  isDeleted: Boolean!
+  createdDate: DateTime!
+}
+
+type UserVoteQuestion {
+  question: Question
+  questionId: Int!
+  userId: Int!
+  user: Users
+  id: Int!
+  isDeleted: Boolean!
+  createdDate: DateTime!
+}
+
+type AcceptBid {
+  clientSecret: String
+  reduceFromWallet: Decimal
+  newBidAmount: Float!
+  stripeAmount: Float!
+  payType: PayType!
+  walletAmountIsEqualToBidAmount: Boolean!
+}
+
+type AchievementDto {
+  projectCount: Int!
+  coursesCount: Int!
+  earnings: Float!
+}
+
+type AdminDashboardDto {
+  activeBidsCount: Int
+  activeBidsRatePercent: Float
+  activeProjectsCount: Int
+  activeProjectsRatePercent: Float
+  awarderProjectsCount: Int
+  awarderProjectsRatePercent: Float
+  activeUsersCount: Int
+  activeUserRatePercent: Float
+  balance: Float
+  activeUsers: [ActiveUsers]
+}
+
+type ApplicantDto {
+  applicantGuid: String
+  code: String
+}
+
+type AppSettings {
+  secret: String
+  refreshTokenTTL: Int!
+  emailFrom: String
+  smtpHost: String
+  smtpPort: Int!
+  smtpUser: String
+  smtpPass: String
+}
+
+type AppSettingsDto {
+  publishableKey: String
+  listerApplicationFee: String
+  hudurApplicationFee: String
+  referalDiscountPercent: Float!
+  isFirstAcceptingProject: Boolean!
+}
+
+type BadgeDto {
+  dailyLoginStreakLevel1: Int!
+  dailyLoginStreakLevel2: Int!
+  dailyLoginStreakLevel3: Int!
+  chaChingLevel1: Int!
+  chaChingLevel2: Int!
+  chaChingLevel3: Int!
+  changingTheWorldLevel1: Int!
+  changingTheWorldLevel2: Int!
+  changingTheWorldLevel3: Int!
+  jackOfAllTradesLevel1: Int!
+  jackOfAllTradesLevel2: Int!
+  jackOfAllTradesLevel3: Int!
+  legionLevel1: Int!
+  legionLevel2: Int!
+  legionLevel3: Int!
+  theHatTrickLevel1: Int!
+  theHatTrickLevel2: Int!
+  theHatTrickLevel3: Int!
+  allStarHuduerLevel1: Int!
+  allStarHuduerLevel2: Int!
+  allStarHuduerLevel3: Int!
+  allStarListerLevel1: Int!
+  allStarListerLevel2: Int!
+  allStarListerLevel3: Int!
+  theSocialiteLevel1: Int!
+  theSocialiteLevel2: Int!
+  theSocialiteLevel3: Int!
+  fromToDoToDoneDoerLevel1: Int!
+  fromToDoToDoneDoerLevel2: Int!
+  fromToDoToDoneDoerLevel3: Int!
+  fromToDoToDoneListerLevel1: Int!
+  fromToDoToDoneListerLevel2: Int!
+  fromToDoToDoneListerLevel3: Int!
+  instantExecutionLevel1: Int!
+  instantExecutionLevel2: Int!
+  instantExecutionLevel3: Int!
+  echoLevel1: Int!
+  echoLevel2: Int!
+  echoLevel3: Int!
+  academicLevel1: Int!
+  academicLevel2: Int!
+  academicLevel3: Int!
+}
+
+type BidsInProjectDetailsTabDto {
+  lowestBid: Bid
+  bestRate: Bid
+  highedtProjectCompletionRate: Bid
+}
+
+type CategoryDto {
+  category: Category
+  isPined: Boolean!
+  hasChild: Boolean!
+  hasProjects: Boolean!
+  projectCount: Int!
+  courseCount: Int!
+}
+
+type ChatGptResponseDto {
+  questionDto: [QuestionDto]
+}
+
+type ClientSecretDto {
+  clientSecret: String
+  bid: Bid
+}
+
+type ConversationDto {
+  projectId: Int
+  userEmail: String
+  userFirstName: String
+  userLastName: String
+  subject: String
+  userName: String
+  userId: Int
+  imageAddress: String
+  projectNames: [String]
+  isGroup: Boolean!
+  groupImage: String
+  groupName: String
+  groupDescription: String
+  isMemberOfGroup: Boolean!
+  conversationId: Int!
+  user: Users
+  unreadCount: Int!
+  latestMessageDate: DateTime!
+}
+
+type ConversationsProjectDto {
+  project: Project
+  latestMessage: String
+  latestMessageDate: DateTime!
+  conversation: Conversations
+}
+
+type CouponActivityDto {
+  userUsedCoupon: UserUsedCoupon
+  discountedAmount: Float!
+}
+
+type CouponDto {
+  coupon: Coupon
+  usedCount: Int!
+}
+
+type CouponValidResultDto {
+  isValid: Boolean!
+  coupon: Coupon
+}
+
+type CourseDto {
+  course: Course
+  enrolledUsers: Int!
+  slides: Int!
+  successfullUsers: Int!
+}
+
+type CourseTopCategoryDto {
+  category: Category
+  id: Int!
+  courseCount: Int!
+}
+
+type CustomStripePayDto {
+  stripeAmount: Decimal!
+  reduceFromWallet: Decimal!
+  payType: PayType!
+  walletAmountIsEqualToBidAmount: Boolean!
+}
+
+type EnthusiasticCistyStatesGrouptedByStateDto {
+  state: String
+  stateCount: Int!
+}
+
+type EphemeralKeyDto {
+  id: String
+  object: String
+  created: DateTime!
+  deleted: Boolean
+  expires: DateTime!
+  livemode: Boolean!
+  secret: String
+  rawJson: String
+}
+
+type GetProjectIBidOn {
+  projectStatus: ProjectStatus!
+  projectCount: Float!
+  bidCount: Float!
+}
+
+type GroupedBidByUser {
+  user: Users
+  lowestBid: Float!
+  lowestBidCreateDate: DateTime!
+}
+
+type HuduRateInfo {
+  avgHuduerRate: Float!
+  sumHuduerRate: Float!
+  sumListerRate: Float!
+}
+
+type ListerRateInfo {
+  avgListerRate: Float!
+  sumHuduerRate: Float!
+  sumListerRate: Float!
+}
+
+type LowestBidDto {
+  bidId: Int!
+  bidStatus: BidStatus!
+  bidAmount: Float!
+  bidDescription: String
+  huduerId: Int!
+  huduerUsername: String
+  huduerEmail: String
+}
+
+type MappDto {
+  originAddress: String
+  destinationAddresses: String
+  distance: KeyValue
+  duration: KeyValue
+  durationInTraffic: KeyValue
+}
+
+type KeyValue {
+  text: String
+  value: String
+}
+
+type ProjectAndUsersGrouptedByStateDto {
+  state: String
+  projectCount: Float!
+  userCount: Float!
+  bidCount: Float!
+}
+
+type ProjectCountByStatus {
+  bidding: Int!
+  inProgress: Int!
+  failed: Int!
+  finished: Int!
+  cancelled: Int!
+}
+
+type ProjectDoerPaymentDetails {
+  huduerReceiveForCompletingTheJobFee: Float!
+  huduerReceiveForCompletingTheJob: Float!
+}
+
+type ProjectDto {
+  isBidder: Boolean!
+  project: Project
+  isLiked: Boolean!
+  bids: [Bid]
+  currentLowBid: Float!
+  lowestBid: LowestBidDto
+  currentDoer: Users
+  yourLowesBid: Float
+  isHuduFinished: Boolean!
+  projectQuestions: [String]
+  awardedBid: Bid
+}
+
+type ProjectPaymentDetailsDto {
+  listerPayForAcceptingBidFee: Float!
+  listerPayForAcceptingBid: Float!
+  couponUsed: Float!
+  doerReceipt: Float!
+  doerFee: Float!
+}
+
+type ProjectsGrouptedByCityDto {
+  count: Int!
+  city: String
+  longitude: Float!
+  latitude: Float!
+  zipCode: String
+}
+
+type QuestionsDto {
+  question: Question
+  isUpVoted: Boolean!
+}
+
+type ReferallInfo {
+  sucessfullReferall: Int!
+  totalSignedUpUserWithMyReferall: Int!
+  totalRewarded: Float!
+  earnedPts: Float!
+}
+
+type ReviewsDto {
+  score: Float!
+  count: Float!
+}
+
+type SingleOrderDto {
+  orderStatus: String
+  reportDecision: String
+  externalIdentifier: String
+  code: String
+}
+
+type StripeAccountRequirementsError {
+  code: String
+  reason: String
+  requirement: String
+}
+
+type StripeCardDto {
+  id: String
+  object: String
+  accountId: String
+  addressCity: String
+  addressCountry: String
+  addressLine1: String
+  addressLine1Check: String
+  addressLine2: String
+  addressState: String
+  addressZip: String
+  addressZipCheck: String
+  availablePayoutMethods: [String]
+  brand: String
+  country: String
+  currency: String
+  customerId: String
+  cvcCheck: String
+  defaultForCurrency: Boolean
+  deleted: Boolean
+  description: String
+  dynamicLast4: String
+  expMonth: Long!
+  expYear: Long!
+  fingerprint: String
+  funding: String
+  iin: String
+  issuer: String
+  last4: String
+  name: String
+  status: String
+  tokenizationMethod: String
+  metadata: [KeyValuePairOfStringAndString!]
+}
+
+type SubmitOrderDto {
+  orderGuid: String
+  quickappApplicantLink: String
+  code: String
+}
+
+type UserDto {
+  user: Users
+  numberOfProject: Int!
+  numberOfAwardedProjects: Int!
+  numberOfDoneProjects: Int!
+  hasInProgressProject: Boolean!
+  hasInProgressBidAsLister: Boolean!
+  hasInProgressBidAsHuduer: Boolean!
+}
+
+type UserDtoSafe {
+  id: Int!
+  userName: String
+  email: String
+  userTypes: UserTypes!
+  imageAddress: String
+}
+
+type UserTazWorkRateDto {
+  gold: OrderStatus!
+  silver: OrderStatus!
+  bronze: OrderStatus!
+  hasBackgroundCheck: Boolean!
+}
+
+"""
+A coordinate is an array of positions.
+"""
+scalar Coordinates
+
+enum ApplyPolicy {
+  BEFORE_RESOLVER
+  AFTER_RESOLVER
+}
+
+"""
+The `DateTime` scalar represents an ISO-8601 compliant date time type.
+"""
+scalar DateTime
+
+enum BadgeType {
+  DAILY_LOGIN_STREAK
+  CHA_CHING
+  CHANGING_THE_WORLD
+  JACK_OF_ALL_TRADES
+  LEGION
+  THE_HAT_TRICK
+  ALL_STAR_LISTER
+  ALL_STAR_HUDUER
+  THE_SOCIALITE
+  FROM_TO_DO_TO_DONE_DOER
+  FROM_TO_DO_TO_DONE_LISTER
+  NEIGHBORLY_LISTER
+  NEIGHBORLY_DOER
+  NEEDS_A_NAME
+  SALARY_MATCH
+  SHOOT_FOR_THE_STARS
+  THE_CITY_TOUR
+  INSTANT_EXECUTION
+  ECHO
+  ACADEMIC
+}
+
+enum BadgeLevel {
+  LEVEL1
+  LEVEL2
+  LEVEL3
+}
+
+enum BidStatus {
+  WAITING
+  IN_PROGRESS
+  HUDU_FINISHED_PROJECT
+  NOT_LUCKY
+  CANCELL
+  FAILED
+  PENNDING_HUDU_WITHDRAW
+  FINISHED
+}
+
+enum CancellRequestStatus {
+  PENDDING
+  CANCELLED
+  REJECTED
+}
+
+enum CancelBidType {
+  CHANGE_IN_PLAN
+  NOT_SATISFIED_WITH_LISTER
+  TIMING_ISSUES
+  QUALITY_CONCERNS
+}
+
+enum MediaType {
+  VIDEO
+  IMAGE
+}
+
+enum CourseStatus {
+  DRAFT
+  PUBLISHED
+}
+
+enum SpanishTranslateStatus {
+  NONE
+  DRAFT
+  PUBLISHED
+}
+
+enum LanguageType {
+  ENGLISH
+  SPAIN
+}
+
+enum EmailTemplateType {
+  WELCOME_EMAIL
+  ACCEPT_BID
+  REJECT_BID
+  ADMIN_INVITATION_CONFIRMATION_LINK
+}
+
+enum FlaggedContentType {
+  PROJECTS_TITLE
+  PROJECTS_DESCRIPTION
+  PROJECTS_ADDRESS_TITLE
+  PROJECTS_STREET_ADDRESS
+  PROJECTS_CITY
+  PROJECTS_STATE
+  PROJECT_IMAGES_ALT
+  USERS_USER_NAME
+  USERS_FIRST_NAME
+  USERS_LAST_NAME
+  USERS_BIO
+  QUESTIONS_TEXT
+  BID_DESCRIPTION
+}
+
+enum LeaderBoardType {
+  UPLOAD_PROFILE_PICTURE
+  COMPLETE_FULL_PROFILE
+  POST_A_PROJECT
+  AWARD_A_PROJECT
+  BID_ON_A_PROJECT
+  DOA_PROJECT
+  LEAVE_A_REVIEW_FOR_A_PROJECT
+  RECEIVE_A5_STAR_REVIEW
+  REFER_A_FRIEND_WHO_SIGNS_UP
+  COMPLETE_A_LARGE_PROJECT_OVER500_DOLAR
+  COMPLETE_AMMEGA_PROJECT_OVER1000_DOLAR
+  RESPOND_TO_A_BID_WITHIN24_HOURS
+  ACHIEVE_A_NEW_BADGE
+  MAINTAIN_A5_STAR_RATING_FOR_A_MONTH
+  ASK_A_QUESTION_ON_A_PROJECT
+  COMPLETE_A_COURSE_FROM_HUDU_ACADEMY
+  SHARE_A_PROJECT_OR_HUDU_APP_ON_SOCIAL_MEDIA
+  LOG_IN_TO_HUDU_FOR7_CONSECUTIVE_DAYS
+  LOG_IN_TO_HUDU_FOR30_CONSECUTIVE_DAYS
+  SHARE_A_REFERALL_CODE_WITH_A_FRIEND
+}
+
+enum MessageTypes {
+  TEXT
+  PHOTO
+  VIDEO
+  VOICE
+  FILE
+}
+
+enum NotificationType {
+  NEW_BID_GIVEN
+  BID_WAS_EDITED
+  BID_WAS_DELETED
+  PROJECT_FINSIHED_BY_HUDU
+  BID_APPROVED_BY_LISTER
+  BID_REJECTED_BY_LISTER
+  BID_CANCELLED_BY_HUDU
+  PROJECT_FINISHED_BY_LISTER
+  PROJECT_FAILED_BY_LISTER
+  PROJECT_WAS_EDITED
+  HUDU_SHOULD_COMPLETE_STRIPE_ACCOUNT_TO_WITHDRAW
+  CREATE_CHAT
+  NEW_QUESTION_ASKED_ON_PROJECT
+  RESPONSE_TO_QUESTION
+  PROJECT_FAVORITED
+  FEEDBACK_RECEIVED
+  CANCELL_PROJECT_REQUEST_REJECTED_BY_ADMIN
+  CANCELL_PROJECT_REQUEST_ACCEPTED_BY_ADMIN
+  BID_ACTIVATED_BY_HUDU
+  CANCELL_BID_AFTER_EDIT_PROJECT
+  CANCELL_PROJECT_REQUEST
+  CANCELL_BID_REQUEST
+  CANCELL_BID_REQUEST_REJECTED_BY_ADMIN
+  CANCELL_BID_REQUEST_ACCEPTED_BY_ADMIN
+  DELETE_PROJECT
+  OTHER
+}
+
+enum PaymentStatus {
+  LISTER_PAY_FOR_ACCEPTING_BID
+  LISTER_PAY_FOR_ACCEPTING_BID_FEE
+  HUDUER_RECEIVE_FOR_COMPLETING_THE_JOB
+  HUDUER_RECEIVE_FOR_COMPLETING_THE_JOB_FEE
+  COUPON_USED
+  TRANSFER_TO_LISTER_AFTER_CONFIRMATION_OF_CANCEL_PROJECT
+  COURSE_PAYMENT
+  USER_WIDTHRAWL_FOR_REFERALL_REGISTERATION
+  USER_WIDTHRAWL_IN_HELD_AMOUNT_OF_PROJECT
+  TAZ_WORK_PRODUCTS_PAYMENT
+  REFERAL_USED
+}
+
+enum PaymentConfirmationStatus {
+  PENDDING_CONFIRMATION
+  SUCCESSFUL
+  FAILED
+}
+
+enum ProjectStatus {
+  BIDDING
+  IN_PROGRESS
+  FAILED
+  FINISHED
+  CANCELLED
+}
+
+enum Availability {
+  FLEXIBLE_DATE
+  SELECTABLE_DATERANGE
+  SPECIFIC_DATE
+}
+
+enum BackgroundCheckTypeForDoer {
+  OPTIONAL
+  MANDATORY
+}
+
+enum CancelProjectStatus {
+  CHANGE_IN_PLAN
+  NOT_SATISFIED_WITH_DOER
+  TIMING_ISSUES
+  QUALITY_CONCERNS
+}
+
+type ProjectQuestion {
+  question: String
+  projectId: Int
+}
+
+enum OrderStatus {
+  PENDDING
+  APPROVED
+  REJECTED
+  NOT_CHECKED
+}
+
+enum ProductType {
+  GOLD
+  SILVER
+  BRONZE
+}
+
+enum UserCourseStatus {
+  IN_PROGRESS
+  COMPLETED
+  FAILED
+}
+
+"""
+The built-in `Decimal` scalar type.
+"""
+scalar Decimal
+
+enum UserTypes {
+  ADMIN
+  USER
+  SUPER_ADMIN
+}
+
+enum BackgroundCheckStatus {
+  NOT_CHECKED
+  GOLD
+  SILVER
+  BRONZE
+}
+
+enum PayType {
+  BY_STRIPE
+  BY_WALLET
+  WALLET_AND_STRIPE
+}
+
+type QuestionDto {
+  question: String
+}
+
+"""
+The `Long` scalar type represents non-fractional signed whole 64-bit numeric values. Long can represent values between -(2^63) and 2^63 - 1.
+"""
+scalar Long
+
+type KeyValuePairOfStringAndString {
+  key: String!
+  value: String!
+}
+
+type ListResponseBaseOfBadge {
+  result(
+    skip: Int
+    take: Int
+    where: BadgeFilterInput
+    order: [BadgeSortInput!]
+  ): BadgeCollectionSegment
+  status: ResponseStatus!
+}
+
+type ResponseBaseOfBadge {
+  result: Badge
+  status: ResponseStatus!
+}
+
+type ListResponseBaseOfTazWorkProducts {
+  result(
+    skip: Int
+    take: Int
+    where: TazWorkProductsFilterInput
+    order: [TazWorkProductsSortInput!]
+  ): TazWorkProductsCollectionSegment
+  status: ResponseStatus!
+}
+
+type ResponseBaseOfUserTazWorkRateDto {
+  result: UserTazWorkRateDto
+  status: ResponseStatus!
+}
+
+type ListResponseBaseOfTazworkOrder {
+  result(
+    skip: Int
+    take: Int
+    where: TazworkOrderFilterInput
+    order: [TazworkOrderSortInput!]
+  ): TazworkOrderCollectionSegment
+  status: ResponseStatus!
+}
+
+type ListResponseBaseOfUserCourse {
+  result(
+    skip: Int
+    take: Int
+    where: UserCourseFilterInput
+    order: [UserCourseSortInput!]
+  ): UserCourseCollectionSegment
+  status: ResponseStatus!
+}
+
+type SingleResponseBaseOfUserCourse {
+  result: UserCourse
+  status: ResponseStatus!
+}
+
+type ListResponseBaseOfCourseQuestionAnswer {
+  result(
+    skip: Int
+    take: Int
+    where: CourseQuestionAnswerFilterInput
+    order: [CourseQuestionAnswerSortInput!]
+  ): CourseQuestionAnswerCollectionSegment
+  status: ResponseStatus!
+}
+
+type SingleResponseBaseOfCourseQuestionAnswer {
+  result: CourseQuestionAnswer
+  status: ResponseStatus!
+}
+
+type ListResponseBaseOfCourseQuestion {
+  result(
+    skip: Int
+    take: Int
+    where: CourseQuestionFilterInput
+    order: [CourseQuestionSortInput!]
+  ): CourseQuestionCollectionSegment
+  status: ResponseStatus!
+}
+
+type SingleResponseBaseOfCourseQuestion {
+  result: CourseQuestion
+  status: ResponseStatus!
+}
+
+type ListResponseBaseOfExam {
+  result(
+    skip: Int
+    take: Int
+    where: ExamFilterInput
+    order: [ExamSortInput!]
+  ): ExamCollectionSegment
+  status: ResponseStatus!
+}
+
+type SingleResponseBaseOfExam {
+  result: Exam
+  status: ResponseStatus!
+}
+
+type ListResponseBaseOfSlide {
+  result(
+    skip: Int
+    take: Int
+    where: SlideFilterInput
+    order: [SlideSortInput!]
+  ): SlideCollectionSegment
+  status: ResponseStatus!
+}
+
+type SingleResponseBaseOfSlide {
+  result: Slide
+  status: ResponseStatus!
+}
+
+type ListResponseBaseOfCourseTranslate {
+  result(
+    skip: Int
+    take: Int
+    where: CourseTranslateFilterInput
+    order: [CourseTranslateSortInput!]
+  ): CourseTranslateCollectionSegment
+  status: ResponseStatus!
+}
+
+type SingleResponseBaseOfCourseTranslate {
+  result: CourseTranslate
+  status: ResponseStatus!
+}
+
+type ListResponseBaseOfCourseDto {
+  result(
+    skip: Int
+    take: Int
+    where: CourseDtoFilterInput
+    order: [CourseDtoSortInput!]
+  ): CourseDtoCollectionSegment
+  status: ResponseStatus!
+}
+
+type ListResponseBaseOfCourse {
+  result(
+    skip: Int
+    take: Int
+    where: CourseFilterInput
+    order: [CourseSortInput!]
+  ): CourseCollectionSegment
+  status: ResponseStatus!
+}
+
+type SingleResponseBaseOfCourse {
+  result: Course
+  status: ResponseStatus!
+}
+
+type ListResponseBaseOfFlaggedContent {
+  result(
+    skip: Int
+    take: Int
+    where: FlaggedContentFilterInput
+    order: [FlaggedContentSortInput!]
+  ): FlaggedContentCollectionSegment
+  status: ResponseStatus!
+}
+
+type ResponseBaseOfFlaggedContent {
+  result: FlaggedContent
+  status: ResponseStatus!
+}
+
+type ListResponseBaseOfTotalBalanceFromStripe {
+  result(
+    skip: Int
+    take: Int
+    where: TotalBalanceFromStripeFilterInput
+    order: [TotalBalanceFromStripeSortInput!]
+  ): TotalBalanceFromStripeCollectionSegment
+  status: ResponseStatus!
+}
+
+type ListResponseBaseOfProjectAndUsersGrouptedByStateDto {
+  result(
+    skip: Int
+    take: Int
+    where: ProjectAndUsersGrouptedByStateDtoFilterInput
+    order: [ProjectAndUsersGrouptedByStateDtoSortInput!]
+  ): ProjectAndUsersGrouptedByStateDtoCollectionSegment
+  status: ResponseStatus!
+}
+
+type ResponseBaseOfAdminDashboardDto {
+  result: AdminDashboardDto
+  status: ResponseStatus!
+}
+
+type ResponseBaseOfInt32 {
+  result: Int!
+  status: ResponseStatus!
+}
+
+type ListResponseBaseOfLeaderBoard {
+  result(
+    skip: Int
+    take: Int
+    where: LeaderBoardFilterInput
+    order: [LeaderBoardSortInput!]
+  ): LeaderBoardCollectionSegment
+  status: ResponseStatus!
+}
+
+type ResponseBaseOfLeaderBoard {
+  result: LeaderBoard
+  status: ResponseStatus!
+}
+
+type ResponseBaseOfChatGptResponseDto {
+  result: ChatGptResponseDto
+  status: ResponseStatus!
+}
+
+type ResponseBaseOfAchievementDto {
+  result: AchievementDto
+  status: ResponseStatus!
+}
+
+type ListResponseBaseOfCourseTopCategoryDto {
+  result(
+    skip: Int
+    take: Int
+    where: CourseTopCategoryDtoFilterInput
+    order: [CourseTopCategoryDtoSortInput!]
+  ): CourseTopCategoryDtoCollectionSegment
+  status: ResponseStatus!
+}
+
+type ListResponseBaseOfPinCategory {
+  result(
+    skip: Int
+    take: Int
+    where: PinCategoryFilterInput
+    order: [PinCategorySortInput!]
+  ): PinCategoryCollectionSegment
+  status: ResponseStatus!
+}
+
+type ListResponseBaseOfCategoryDto {
+  result(
+    skip: Int
+    take: Int
+    where: CategoryDtoFilterInput
+    order: [CategoryDtoSortInput!]
+  ): CategoryDtoCollectionSegment
+  status: ResponseStatus!
+}
+
+type ResponseBaseOfCategory {
+  result: Category
+  status: ResponseStatus!
+}
+
+type ListResponseBaseOfCouponActivityDto {
+  result(
+    skip: Int
+    take: Int
+    where: CouponActivityDtoFilterInput
+    order: [CouponActivityDtoSortInput!]
+  ): CouponActivityDtoCollectionSegment
+  status: ResponseStatus!
+}
+
+type ResponseBaseOfCouponValidResultDto {
+  result: CouponValidResultDto
+  status: ResponseStatus!
+}
+
+type ListResponseBaseOfCouponDto {
+  result(
+    skip: Int
+    take: Int
+    where: CouponDtoFilterInput
+    order: [CouponDtoSortInput!]
+  ): CouponDtoCollectionSegment
+  status: ResponseStatus!
+}
+
+type ResponseBaseOfCoupon {
+  result: Coupon
+  status: ResponseStatus!
+}
+
+type ResponseBaseOfInt64 {
+  result: Long!
+  status: ResponseStatus!
+}
+
+type ResponseBaseOfProjectDoerPaymentDetails {
+  result: ProjectDoerPaymentDetails
+  status: ResponseStatus!
+}
+
+type ResponseBaseOfProjectPaymentDetailsDto {
+  result: ProjectPaymentDetailsDto
+  status: ResponseStatus!
+}
+
+type ListResponseBaseOfStripeCardDto {
+  result(
+    skip: Int
+    take: Int
+    where: StripeCardDtoFilterInput
+    order: [StripeCardDtoSortInput!]
+  ): StripeCardDtoCollectionSegment
+  status: ResponseStatus!
+}
+
+type ResponseBaseOfClientSecretDto {
+  result: ClientSecretDto
+  status: ResponseStatus!
+}
+
+type ListResponseBaseOfStripeAccountRequirementsError {
+  result(
+    skip: Int
+    take: Int
+    where: StripeAccountRequirementsErrorFilterInput
+    order: [StripeAccountRequirementsErrorSortInput!]
+  ): StripeAccountRequirementsErrorCollectionSegment
+  status: ResponseStatus!
+}
+
+type ResponseBaseOfAppSettingsDto {
+  result: AppSettingsDto
+  status: ResponseStatus!
+}
+
+type ListResponseBaseOfPayment {
+  result(
+    skip: Int
+    take: Int
+    where: PaymentFilterInput
+    order: [PaymentSortInput!]
+  ): PaymentCollectionSegment
+  status: ResponseStatus!
+}
+
+type ResponseBaseOfAcceptBid {
+  result: AcceptBid
+  status: ResponseStatus!
+}
+
+type ResponseBaseOfDictionaryOfBidStatusAndInt32 {
+  result: [KeyValuePairOfBidStatusAndInt32!]
+  status: ResponseStatus!
+}
+
+enum GetReviewType {
+  LISTER
+  DOER
+  TOTAL
+}
+
+type ListResponseBaseOfReviewsDto {
+  result(
+    skip: Int
+    take: Int
+    where: ReviewsDtoFilterInput
+    order: [ReviewsDtoSortInput!]
+  ): ReviewsDtoCollectionSegment
+  status: ResponseStatus!
+}
+
+input GetBidsOrdedByBidSatatusInput {
+  bovms: [BidOrderVMInput]
+  projectFilter: ProjectFilter
+  location: Position
+}
+
+type ResponseBaseOfBidsInProjectDetailsTabDto {
+  result: BidsInProjectDetailsTabDto
+  status: ResponseStatus!
+}
+
+type ListResponseBaseOfBid {
+  result(
+    skip: Int
+    take: Int
+    where: BidFilterInput
+    order: [BidSortInput!]
+  ): BidCollectionSegment
+  status: ResponseStatus!
+}
+
+type ResponseBaseOfBid {
+  result: Bid
+  status: ResponseStatus!
+}
+
+type ListResponseBaseOfEnthusiasticCistyStatesGrouptedByStateDto {
+  result(
+    skip: Int
+    take: Int
+    where: EnthusiasticCistyStatesGrouptedByStateDtoFilterInput
+    order: [EnthusiasticCistyStatesGrouptedByStateDtoSortInput!]
+  ): EnthusiasticCistyStatesGrouptedByStateDtoCollectionSegment
+  status: ResponseStatus!
+}
+
+type ListResponseBaseOfEnthusiasticCistyState {
+  result(
+    skip: Int
+    take: Int
+    where: EnthusiasticCistyStateFilterInput
+    order: [EnthusiasticCistyStateSortInput!]
+  ): EnthusiasticCistyStateCollectionSegment
+  status: ResponseStatus!
+}
+
+type ListResponseBaseOfGetProjectIBidOn {
+  result(
+    skip: Int
+    take: Int
+    where: GetProjectIBidOnFilterInput
+    order: [GetProjectIBidOnSortInput!]
+  ): GetProjectIBidOnCollectionSegment
+  status: ResponseStatus!
+}
+
+type ListResponseBaseOfProjectsGrouptedByCityDto {
+  result(
+    skip: Int
+    take: Int
+    where: ProjectsGrouptedByCityDtoFilterInput
+    order: [ProjectsGrouptedByCityDtoSortInput!]
+  ): ProjectsGrouptedByCityDtoCollectionSegment
+  status: ResponseStatus!
+}
+
+type ResponseBaseOfProjectCountByStatus {
+  result: ProjectCountByStatus
+  status: ResponseStatus!
+}
+
+type ListResponseBaseOfQuestionsDto {
+  result(
+    skip: Int
+    take: Int
+    where: QuestionsDtoFilterInput
+    order: [QuestionsDtoSortInput!]
+  ): QuestionsDtoCollectionSegment
+  status: ResponseStatus!
+}
+
+type ListResponseBaseOfProjectImages {
+  result(
+    skip: Int
+    take: Int
+    where: ProjectImagesFilterInput
+    order: [ProjectImagesSortInput!]
+  ): ProjectImagesCollectionSegment
+  status: ResponseStatus!
+}
+
+type ResponseBaseOfProjectDto {
+  result: ProjectDto
+  status: ResponseStatus!
+}
+
+input ProjectOrderVmInput {
+  projectStatus: ProjectStatus!
+  order: Int!
+}
+
+enum ProjectFilter {
+  LOW_TO_HIGH_BIDS
+  HIGH_TO_LOW_BIDS
+  CLOSET_TO_CURRENT_LOCATION
+  MY_ZIP_CODE
+  NEWEST_TO_OLDEST
+  OLDEST_TO_NEWEST
+  OLDEST_TO_NEWEST_BY_PROJECT_DEAD_LINE
+}
+
+type ListResponseBaseOfProjectDto {
+  result(
+    skip: Int
+    take: Int
+    where: ProjectDtoFilterInput
+    order: [ProjectDtoSortInput!]
+  ): ProjectDtoCollectionSegment
+  status: ResponseStatus!
+}
+
+type SingleResponseBaseOfProjectDto {
+  result: ProjectDto
+  status: ResponseStatus!
+}
+
+type ListResponseBaseOfNotification {
+  result(
+    skip: Int
+    take: Int
+    where: NotificationFilterInput
+    order: [NotificationSortInput!]
+  ): NotificationCollectionSegment
+  status: ResponseStatus!
+}
+
+type ListResponseBaseOfConversationsProjectDto {
+  result(
+    skip: Int
+    take: Int
+    where: ConversationsProjectDtoFilterInput
+    order: [ConversationsProjectDtoSortInput!]
+  ): ConversationsProjectDtoCollectionSegment
+  status: ResponseStatus!
+}
+
+type ResponseBaseOfConversations {
+  result: Conversations
+  status: ResponseStatus!
+}
+
+type ListResponseBaseOfMessages {
+  result(
+    skip: Int
+    take: Int
+    where: MessagesFilterInput
+    order: [MessagesSortInput!]
+  ): MessagesCollectionSegment
+  status: ResponseStatus!
+}
+
+type ListResponseBaseOfUserMessageGroup {
+  result(
+    skip: Int
+    take: Int
+    where: UserMessageGroupFilterInput
+    order: [UserMessageGroupSortInput!]
+  ): UserMessageGroupCollectionSegment
+  status: ResponseStatus!
+}
+
+type ListResponseBaseOfConversationDto {
+  result(
+    skip: Int
+    take: Int
+    where: ConversationDtoFilterInput
+    order: [ConversationDtoSortInput!]
+  ): ConversationDtoCollectionSegment
+  status: ResponseStatus!
+}
+
+type ListResponseBaseOfEmailTemplate {
+  result(
+    skip: Int
+    take: Int
+    where: EmailTemplateFilterInput
+    order: [EmailTemplateSortInput!]
+  ): EmailTemplateCollectionSegment
+  status: ResponseStatus!
+}
+
+type ResponseBaseOfEmailTemplate {
+  result: EmailTemplate
+  status: ResponseStatus!
+}
+
+type ListResponseBaseOfActiveUsers {
+  result(
+    skip: Int
+    take: Int
+    where: ActiveUsersFilterInput
+    order: [ActiveUsersSortInput!]
+  ): ActiveUsersCollectionSegment
+  status: ResponseStatus!
+}
+
+type ListResponseBaseOfUserDtoSafe {
+  result(
+    skip: Int
+    take: Int
+    where: UserDtoSafeFilterInput
+    order: [UserDtoSafeSortInput!]
+  ): UserDtoSafeCollectionSegment
+  status: ResponseStatus!
+}
+
+type ListResponseBaseOfUsers {
+  result(
+    skip: Int
+    take: Int
+    where: UsersFilterInput
+    order: [UsersSortInput!]
+  ): UsersCollectionSegment
+  status: ResponseStatus!
+}
+
+type ListResponseBaseOfUserDto {
+  result(
+    skip: Int
+    take: Int
+    where: UserDtoFilterInput
+    order: [UserDtoSortInput!]
+  ): UserDtoCollectionSegment
+  status: ResponseStatus!
+}
+
+type ListResponseBaseOfUserImage {
+  result(
+    skip: Int
+    take: Int
+    where: UserImageFilterInput
+    order: [UserImageSortInput!]
+  ): UserImageCollectionSegment
+  status: ResponseStatus!
+}
+
+type ListResponseBaseOfUserAddress {
+  result(
+    skip: Int
+    take: Int
+    where: UserAddressFilterInput
+    order: [UserAddressSortInput!]
+  ): UserAddressCollectionSegment
+  status: ResponseStatus!
+}
+
+input UserAddressIputInput {
+  id: Int
+  addressTitle: String!
+  streetAddress: String!
+  city: String!
+  state: String!
+  point: Position
+  zipCode: String!
+}
+
+type ResponseBaseOfBoolean {
+  result: Boolean!
+  status: ResponseStatus!
+}
+
+type ResponseBaseOfUsers {
+  result: Users
+  status: ResponseStatus!
+}
+
+type ResponseBaseOfUsersDocument {
+  result: UsersDocument
+  status: ResponseStatus!
+}
+
+type ListResponseBaseOfUsersDocument {
+  result(
+    skip: Int
+    take: Int
+    where: UsersDocumentFilterInput
+    order: [UsersDocumentSortInput!]
+  ): UsersDocumentCollectionSegment
+  status: ResponseStatus!
+}
+
+type ResponseBaseOfAppRate {
+  result: AppRate
+  status: ResponseStatus!
+}
+
+type ListResponseBaseOfAppRate {
+  result(
+    skip: Int
+    take: Int
+    where: AppRateFilterInput
+    order: [AppRateSortInput!]
+  ): AppRateCollectionSegment
+  status: ResponseStatus!
+}
+
+type ResponseBaseOfFlagText {
+  result: FlagText
+  status: ResponseStatus!
+}
+
+type ListResponseBaseOfFlagText {
+  result(
+    skip: Int
+    take: Int
+    where: FlagTextFilterInput
+    order: [FlagTextSortInput!]
+  ): FlagTextCollectionSegment
+  status: ResponseStatus!
+}
+
+type ListResponseBaseOfRegisteredUserByReferall {
+  result(
+    skip: Int
+    take: Int
+    where: RegisteredUserByReferallFilterInput
+    order: [RegisteredUserByReferallSortInput!]
+  ): RegisteredUserByReferallCollectionSegment
+  status: ResponseStatus!
+}
+
+type ListResponseBaseOfReferall {
+  result(
+    skip: Int
+    take: Int
+    where: ReferallFilterInput
+    order: [ReferallSortInput!]
+  ): ReferallCollectionSegment
+  status: ResponseStatus!
+}
+
+type ResponseBaseOfReferallInfo {
+  result: ReferallInfo
+  status: ResponseStatus!
+}
+
+type ResponseBaseOfRegisteredUserByReferall {
+  result: RegisteredUserByReferall
+  status: ResponseStatus!
+}
+
+input AdminInput {
+  email: String!
+  firstName: String!
+  lastName: String!
+}
+
+input UserInput {
+  id: Int
+  userName: String!
+  imageAddress: String
+  firstName: String
+  lastName: String
+  bio: String
+}
+
+input ActivationNotificationInput {
+  projectNotification: Boolean!
+  bidNotification: Boolean!
+  chatNotification: Boolean!
+  questionNotification: Boolean!
+}
+
+type ResponseBaseOfUserAddress {
+  result: UserAddress
+  status: ResponseStatus!
+}
+
+input UserImageInput {
+  id: Int
+  imageAddress: String
+}
+
+type ResponseBaseOfUserImage {
+  result: UserImage
+  status: ResponseStatus!
+}
+
+enum ResponseStatus {
+  SUCCESS
+  NOT_FOUND
+  UNKNOWN_ERROR
+  NOT_ENOUGH_DATA
+  AUTHENTICATION_FAILED
+  USER_NOT_FOUND
+  ALREADY_EXIST
+  SELF_MESSAGE_NOT_ALLOWED
+  ALREADY_REMOVED
+  NOT_ALLOWED
+  ALREADY_FOLLOWED
+  SAME_ID
+  POST_NOT_FOUND
+  COMMENT_NOT_FOUND
+  INVALID_TIME_RANGE
+  TIME_CONFLICT
+  INVALID_TIME_SYNTAX
+  DIFFRENET_IDS
+  HOST_NOT_FOUND
+  ACCESS_DENIED
+  FAILED
+  USERNAME_ALREADY_EXIST
+  DURATION_IS_REQUIRED
+  ACTIVE_BIDS_EXIST
+  IN_PROGRESS_BID_EXIST
+  SELF_BID_NOT_ALLOWED
+  USER_IS_NOT_ACTIVE
+  SESSION_NOT_FOUND
+  STRIPE_ACCOUNT_NOT_EXIST
+  USER_DONT_HAVE_STRIPE_ACCOUNT
+  USER_DONT_HAVE_ENOUGH_BALANCE_IN_STRIP_ACCOUNT
+  PLAT_FORM_DONT_HAVE_ENOUGH_BALANCE_IN_STRIP_ACCOUNT
+  IN_VALID_AMOUNT_FOR_STRIPE_PAYMENT
+  FAILED_PAYMENT
+  FAILED_TO_WIDTHRAW
+  HUDUR_ACCOUNT_NEEDS_TO_HAVE_TRANSFER_ENABLED
+  STRIPE_ACCOUNT_NEEDS_TO_HAVE_TRANSFER_ENABLED
+}
+
+input EmailInput {
+  to: String
+  subject: String
+  plainTextContent: String
+  htmlContent: String
+}
+
+input EmailTemplateInput {
+  email: String
+  text: String!
+  spanishText: String!
+  emailTemplateType: EmailTemplateType!
+}
+
+type ResponseBaseOfMessages {
+  result: Messages
+  status: ResponseStatus!
+}
+
+input MessageInput {
+  subject: String
+  messageType: MessageTypes!
+  photoUrl: String
+  projectId: Int
+  isGroup: Boolean!
+  isByAmin: Boolean!
+  conversationId: Int
+  receiverId: Int
+  text: String
+}
+
+input CreateConversationInput {
+  senderId: Int
+  receiverId: Int
+  subject: String
+  projectId: Int
+  isGroup: Boolean!
+  isByAmin: Boolean!
+}
+
+type ResponseBase {
+  status: ResponseStatus!
+}
+
+input NotificationInputsInput {
+  title: String!
+  description: String!
+  userId: Int!
+  senderId: Int!
+}
+
+type ResponseBaseOfNotification {
+  result: Notification
+  status: ResponseStatus!
+}
+
+type ResponseBaseOfProject {
+  result: Project
+  status: ResponseStatus!
+}
+
+input AddProjectInput {
+  title: String!
+  description: String!
+  duration: String
+  availability: Availability!
+  addressTitle: String!
+  streetAddress: String!
+  city: String!
+  state: String!
+  cover: String!
+  backgroundCheckTypeForDoer: BackgroundCheckTypeForDoer!
+  projectDeadLine: DateTime
+  startDate: DateTime
+  endDate: DateTime
+  point: Position!
+  zipCode: String!
+  categoryId: Int
+  projectImages: [ProjectImagesInput]
+  projectQuestions: [ProjectQuestionInput]
+}
+
+input EditProjectInput {
+  id: Int!
+  title: String
+  description: String
+  duration: String
+  availability: Availability
+  addressTitle: String
+  streetAddress: String
+  city: String
+  state: String
+  cover: String
+  backgroundCheckTypeForDoer: BackgroundCheckTypeForDoer!
+  projectDeadLine: DateTime
+  startDate: DateTime
+  endDate: DateTime
+  point: Position
+  zipCode: String
+  categoryId: Int
+  projectImages: [ProjectImagesInput]
+  projectQuestions: [ProjectQuestionInput]
+}
+
+type ResponseBaseOfProjectImages {
+  result: ProjectImages
+  status: ResponseStatus!
+}
+
+input EditProjectImagesInput {
+  id: Int!
+  imageAddress: String
+  alt: String
+}
+
+type ResponseBaseOfUserLikeProject {
+  result: UserLikeProject
+  status: ResponseStatus!
+}
+
+type ListResponseBaseOfUserLikeProject {
+  result(
+    skip: Int
+    take: Int
+    where: UserLikeProjectFilterInput
+    order: [UserLikeProjectSortInput!]
+  ): UserLikeProjectCollectionSegment
+  status: ResponseStatus!
+}
+
+type ResponseBaseOfQuestion {
+  result: Question
+  status: ResponseStatus!
+}
+
+input QuestionInput {
+  text: String!
+  projectId: Int!
+  parentId: Int
+}
+
+input EditQuestionInput {
+  id: Int!
+  text: String!
+}
+
+type ResponseBaseOfReportQuestion {
+  result: ReportQuestion
+  status: ResponseStatus!
+}
+
+input ReportQuestionInput {
+  text: String
+  reason: String
+  questionId: Int!
+}
+
+type ResponseBaseOfUserVoteQuestion {
+  result: UserVoteQuestion
+  status: ResponseStatus!
+}
+
+type ResponseBaseOfEnthusiasticCistyState {
+  result: EnthusiasticCistyState
+  status: ResponseStatus!
+}
+
+input AddEnthusiasticCistyStateInput {
+  state: String
+  city: String
+}
+
+input BidInput {
+  amount: Float!
+  description: String!
+  projectId: Int!
+  bidAnswerToQuestionInputs: [BidAnswerToQuestionInput]
+}
+
+input EditBidInput {
+  id: Int!
+  amount: Float
+  description: String
+  bidAnswerToQuestionInputs: [BidAnswerToQuestionInput]
+}
+
+input EditBidByAdminInput {
+  id: Int!
+  amount: Float!
+  description: String
+}
+
+input FeedbackInput {
+  bidId: Int!
+  hudusComment: String
+  hudusRate: Int!
+  listersComment: String
+  listersRate: Int!
+}
+
+input EditFeedbackByAdminInput {
+  bidId: Int!
+  hudusComment: String
+  hudusRate: String
+  listersComment: String
+  listersRate: String
+}
+
+type ResponseBaseOfString {
+  result: String
+  status: ResponseStatus!
+}
+
+input StripeCardInput {
+  cardNumder: String!
+  cVC: String!
+  expMonth: Long!
+  expYear: Long!
+  currency: String
+  name: String
+  isDefaultSource: Boolean!
+}
+
+type ResponseBaseOfEphemeralKeyDto {
+  result: EphemeralKeyDto
+  status: ResponseStatus!
+}
+
+input PaymentIntentInput {
+  amount: Float!
+  metadata: [KeyValuePairOfStringAndStringInput!]
+  customer: String
+  receiptEmail: String
+}
+
+enum WidthrawWalletType {
+  PAY_OUT
+  TRANSFER_TO_STRIPE
+}
+
+input CouponInput {
+  id: Int
+  title: String!
+  code: String!
+  expirationDate: DateTime!
+  percent: Float!
+  maximumDiscountAmount: Float
+  userlimits: Int!
+  isActive: Boolean!
+}
+
+type ListResponseBaseOfCategory {
+  result(
+    skip: Int
+    take: Int
+    where: CategoryFilterInput
+    order: [CategorySortInput!]
+  ): CategoryCollectionSegment
+  status: ResponseStatus!
+}
+
+input CategoryInput {
+  id: Int
+  text: String!
+  spanishText: String!
+  subCategories: [SubCategoryInput]
+}
+
+type ResponseBaseOfPinCategory {
+  result: PinCategory
+  status: ResponseStatus!
+}
+
+type ResponseBaseOfCourse {
+  result: Course
+  status: ResponseStatus!
+}
+
+input CourseInput {
+  categoryId: Int!
+  title: String
+  description: String
+  mediaUrl: String
+  mediaType: MediaType!
+  price: Float!
+}
+
+type ResponseBaseOfCourseTranslate {
+  result: CourseTranslate
+  status: ResponseStatus!
+}
+
+input CourseTranslateInput {
+  id: Int
+  languageType: LanguageType!
+  title: String
+  content: String
+  mediaUrl: String
+  courseId: Int
+  slideId: Int
+  courseQuestionId: Int
+  courseQuestionAnswerId: Int
+}
+
+type ResponseBaseOfSlide {
+  result: Slide
+  status: ResponseStatus!
+}
+
+input SlideInput {
+  title: String
+  description: String
+  mediaUrl: String
+  mediaType: MediaType!
+  courseId: Int!
+}
+
+type ResponseBaseOfExam {
+  result: Exam
+  status: ResponseStatus!
+}
+
+type ResponseBaseOfCourseQuestionAnswer {
+  result: CourseQuestionAnswer
+  status: ResponseStatus!
+}
+
+type ResponseBaseOfCourseQuestion {
+  result: CourseQuestion
+  status: ResponseStatus!
+}
+
+input CourseQuestionInput {
+  id: Int
+  number: Int!
+  questionContent: String
+  examId: Int!
+}
+
+input CourseQuestionAnswerInput {
+  id: Int
+  value: String
+  isCorrect: Boolean!
+  courseQuestionId: Int!
+}
+
+type ResponseBaseOfUserCourse {
+  result: UserCourse
+  status: ResponseStatus!
+}
+
+input UsersDocumentInput {
+  id: Int
+  fileName: String
+  file: String
+}
+
+input TranslateInput {
+  fromLanguage: String
+  toLanguage: String
+  text: String
+}
+
+input AppRateInput {
+  rate: Int!
+  text: String
+}
+
+type ResponseBaseOfSubmitOrderDto {
+  result: SubmitOrderDto
+  status: ResponseStatus!
+}
+
+input FlaggedContentInput {
+  id: Int
+  text: String
+  flaggedContentType: FlaggedContentType!
+  projectId: Int
+  userProfileId: Int
+  projectImageId: Int
+  questionId: Int
+  bidId: Int
+}
+
+input FlagTextInput {
+  id: Int
+  text: String!
+}
+
+input BadgeFilterInput {
+  and: [BadgeFilterInput!]
+  or: [BadgeFilterInput!]
+  badgeType: BadgeTypeOperationFilterInput
+  badgeLevel: BadgeLevelOperationFilterInput
+  description: StringOperationFilterInput
+  userId: ComparableInt32OperationFilterInput
+  user: UsersFilterInput
+  id: ComparableInt32OperationFilterInput
+  isDeleted: BooleanOperationFilterInput
+  createdDate: ComparableDateTimeOperationFilterInput
+}
+
+input BadgeSortInput {
+  badgeType: SortEnumType
+  badgeLevel: SortEnumType
+  description: SortEnumType
+  userId: SortEnumType
+  user: UsersSortInput
+  id: SortEnumType
+  isDeleted: SortEnumType
+  createdDate: SortEnumType
+}
+
+type BadgeCollectionSegment {
+  items: [Badge]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: CollectionSegmentInfo!
+  totalCount: Int!
+}
+
+input TazWorkProductsFilterInput {
+  and: [TazWorkProductsFilterInput!]
+  or: [TazWorkProductsFilterInput!]
+  clientProductGuid: StringOperationFilterInput
+  productGuid: StringOperationFilterInput
+  productName: StringOperationFilterInput
+  alternateName: StringOperationFilterInput
+  productType: ProductTypeOperationFilterInput
+  price: ComparableDoubleOperationFilterInput
+  tazworkOrders: ListFilterInputTypeOfTazworkOrderFilterInput
+  id: ComparableInt32OperationFilterInput
+  isDeleted: BooleanOperationFilterInput
+  createdDate: ComparableDateTimeOperationFilterInput
+}
+
+input TazWorkProductsSortInput {
+  clientProductGuid: SortEnumType
+  productGuid: SortEnumType
+  productName: SortEnumType
+  alternateName: SortEnumType
+  productType: SortEnumType
+  price: SortEnumType
+  id: SortEnumType
+  isDeleted: SortEnumType
+  createdDate: SortEnumType
+}
+
+type TazWorkProductsCollectionSegment {
+  items: [TazWorkProducts]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: CollectionSegmentInfo!
+  totalCount: Int!
+}
+
+input TazworkOrderFilterInput {
+  and: [TazworkOrderFilterInput!]
+  or: [TazworkOrderFilterInput!]
+  userId: ComparableInt32OperationFilterInput
+  productId: ComparableInt32OperationFilterInput
+  user: UsersFilterInput
+  product: TazWorkProductsFilterInput
+  orderGuid: StringOperationFilterInput
+  quickappApplicantLink: StringOperationFilterInput
+  orderStatus: OrderStatusOperationFilterInput
+  payment: PaymentFilterInput
+  id: ComparableInt32OperationFilterInput
+  isDeleted: BooleanOperationFilterInput
+  createdDate: ComparableDateTimeOperationFilterInput
+}
+
+input TazworkOrderSortInput {
+  userId: SortEnumType
+  productId: SortEnumType
+  user: UsersSortInput
+  product: TazWorkProductsSortInput
+  orderGuid: SortEnumType
+  quickappApplicantLink: SortEnumType
+  orderStatus: SortEnumType
+  payment: PaymentSortInput
+  id: SortEnumType
+  isDeleted: SortEnumType
+  createdDate: SortEnumType
+}
+
+type TazworkOrderCollectionSegment {
+  items: [TazworkOrder]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: CollectionSegmentInfo!
+  totalCount: Int!
+}
+
+input UserCourseFilterInput {
+  and: [UserCourseFilterInput!]
+  or: [UserCourseFilterInput!]
+  userId: ComparableInt32OperationFilterInput
+  user: UsersFilterInput
+  courseId: ComparableInt32OperationFilterInput
+  course: CourseFilterInput
+  currentSlideId: ComparableInt32OperationFilterInput
+  currentSlide: SlideFilterInput
+  isSlidesEnded: BooleanOperationFilterInput
+  hasCertificate: BooleanOperationFilterInput
+  completedPercent: ComparableDoubleOperationFilterInput
+  status: UserCourseStatusOperationFilterInput
+  payment: PaymentFilterInput
+  id: ComparableInt32OperationFilterInput
+  isDeleted: BooleanOperationFilterInput
+  createdDate: ComparableDateTimeOperationFilterInput
+}
+
+input UserCourseSortInput {
+  userId: SortEnumType
+  user: UsersSortInput
+  courseId: SortEnumType
+  course: CourseSortInput
+  currentSlideId: SortEnumType
+  currentSlide: SlideSortInput
+  isSlidesEnded: SortEnumType
+  hasCertificate: SortEnumType
+  completedPercent: SortEnumType
+  status: SortEnumType
+  payment: PaymentSortInput
+  id: SortEnumType
+  isDeleted: SortEnumType
+  createdDate: SortEnumType
+}
+
+type UserCourseCollectionSegment {
+  items: [UserCourse]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: CollectionSegmentInfo!
+  totalCount: Int!
+}
+
+input CourseQuestionAnswerFilterInput {
+  and: [CourseQuestionAnswerFilterInput!]
+  or: [CourseQuestionAnswerFilterInput!]
+  value: StringOperationFilterInput
+  isCorrect: BooleanOperationFilterInput
+  courseQuestionId: ComparableInt32OperationFilterInput
+  courseQuestion: CourseQuestionFilterInput
+  courseTranslates: ListFilterInputTypeOfCourseTranslateFilterInput
+  id: ComparableInt32OperationFilterInput
+  isDeleted: BooleanOperationFilterInput
+  createdDate: ComparableDateTimeOperationFilterInput
+}
+
+input CourseQuestionAnswerSortInput {
+  value: SortEnumType
+  isCorrect: SortEnumType
+  courseQuestionId: SortEnumType
+  courseQuestion: CourseQuestionSortInput
+  id: SortEnumType
+  isDeleted: SortEnumType
+  createdDate: SortEnumType
+}
+
+type CourseQuestionAnswerCollectionSegment {
+  items: [CourseQuestionAnswer]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: CollectionSegmentInfo!
+  totalCount: Int!
+}
+
+input CourseQuestionFilterInput {
+  and: [CourseQuestionFilterInput!]
+  or: [CourseQuestionFilterInput!]
+  number: ComparableInt32OperationFilterInput
+  questionContent: StringOperationFilterInput
+  examId: ComparableInt32OperationFilterInput
+  exam: ExamFilterInput
+  answers: ListFilterInputTypeOfCourseQuestionAnswerFilterInput
+  courseTranslates: ListFilterInputTypeOfCourseTranslateFilterInput
+  id: ComparableInt32OperationFilterInput
+  isDeleted: BooleanOperationFilterInput
+  createdDate: ComparableDateTimeOperationFilterInput
+}
+
+input CourseQuestionSortInput {
+  number: SortEnumType
+  questionContent: SortEnumType
+  examId: SortEnumType
+  exam: ExamSortInput
+  id: SortEnumType
+  isDeleted: SortEnumType
+  createdDate: SortEnumType
+}
+
+type CourseQuestionCollectionSegment {
+  items: [CourseQuestion]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: CollectionSegmentInfo!
+  totalCount: Int!
+}
+
+input ExamFilterInput {
+  and: [ExamFilterInput!]
+  or: [ExamFilterInput!]
+  courseId: ComparableInt32OperationFilterInput
+  course: CourseFilterInput
+  courseQuestions: ListFilterInputTypeOfCourseQuestionFilterInput
+  id: ComparableInt32OperationFilterInput
+  isDeleted: BooleanOperationFilterInput
+  createdDate: ComparableDateTimeOperationFilterInput
+}
+
+input ExamSortInput {
+  courseId: SortEnumType
+  course: CourseSortInput
+  id: SortEnumType
+  isDeleted: SortEnumType
+  createdDate: SortEnumType
+}
+
+type ExamCollectionSegment {
+  items: [Exam]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: CollectionSegmentInfo!
+  totalCount: Int!
+}
+
+input SlideFilterInput {
+  and: [SlideFilterInput!]
+  or: [SlideFilterInput!]
+  title: StringOperationFilterInput
+  description: StringOperationFilterInput
+  mediaUrl: StringOperationFilterInput
+  mediaType: MediaTypeOperationFilterInput
+  order: ComparableInt32OperationFilterInput
+  courseId: ComparableInt32OperationFilterInput
+  course: CourseFilterInput
+  userCourses: ListFilterInputTypeOfUserCourseFilterInput
+  courseTranslates: ListFilterInputTypeOfCourseTranslateFilterInput
+  id: ComparableInt32OperationFilterInput
+  isDeleted: BooleanOperationFilterInput
+  createdDate: ComparableDateTimeOperationFilterInput
+}
+
+input SlideSortInput {
+  title: SortEnumType
+  description: SortEnumType
+  mediaUrl: SortEnumType
+  mediaType: SortEnumType
+  order: SortEnumType
+  courseId: SortEnumType
+  course: CourseSortInput
+  id: SortEnumType
+  isDeleted: SortEnumType
+  createdDate: SortEnumType
+}
+
+type SlideCollectionSegment {
+  items: [Slide]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: CollectionSegmentInfo!
+  totalCount: Int!
+}
+
+input CourseTranslateFilterInput {
+  and: [CourseTranslateFilterInput!]
+  or: [CourseTranslateFilterInput!]
+  languageType: LanguageTypeOperationFilterInput
+  title: StringOperationFilterInput
+  content: StringOperationFilterInput
+  mediaUrl: StringOperationFilterInput
+  courseId: ComparableNullableOfInt32OperationFilterInput
+  course: CourseFilterInput
+  slideId: ComparableNullableOfInt32OperationFilterInput
+  slide: SlideFilterInput
+  courseQuestionId: ComparableNullableOfInt32OperationFilterInput
+  courseQuestion: CourseQuestionFilterInput
+  courseQuestionAnswerId: ComparableNullableOfInt32OperationFilterInput
+  courseQuestionAnswer: CourseQuestionAnswerFilterInput
+  id: ComparableInt32OperationFilterInput
+  isDeleted: BooleanOperationFilterInput
+  createdDate: ComparableDateTimeOperationFilterInput
+}
+
+input CourseTranslateSortInput {
+  languageType: SortEnumType
+  title: SortEnumType
+  content: SortEnumType
+  mediaUrl: SortEnumType
+  courseId: SortEnumType
+  course: CourseSortInput
+  slideId: SortEnumType
+  slide: SlideSortInput
+  courseQuestionId: SortEnumType
+  courseQuestion: CourseQuestionSortInput
+  courseQuestionAnswerId: SortEnumType
+  courseQuestionAnswer: CourseQuestionAnswerSortInput
+  id: SortEnumType
+  isDeleted: SortEnumType
+  createdDate: SortEnumType
+}
+
+type CourseTranslateCollectionSegment {
+  items: [CourseTranslate]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: CollectionSegmentInfo!
+  totalCount: Int!
+}
+
+input CourseDtoFilterInput {
+  and: [CourseDtoFilterInput!]
+  or: [CourseDtoFilterInput!]
+  course: CourseFilterInput
+  enrolledUsers: ComparableInt32OperationFilterInput
+  slides: ComparableInt32OperationFilterInput
+  successfullUsers: ComparableInt32OperationFilterInput
+}
+
+input CourseDtoSortInput {
+  course: CourseSortInput
+  enrolledUsers: SortEnumType
+  slides: SortEnumType
+  successfullUsers: SortEnumType
+}
+
+type CourseDtoCollectionSegment {
+  items: [CourseDto]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: CollectionSegmentInfo!
+  totalCount: Int!
+}
+
+input CourseFilterInput {
+  and: [CourseFilterInput!]
+  or: [CourseFilterInput!]
+  title: StringOperationFilterInput
+  description: StringOperationFilterInput
+  mediaUrl: StringOperationFilterInput
+  mediaType: MediaTypeOperationFilterInput
+  courseStatus: CourseStatusOperationFilterInput
+  spanishTranslateStatus: SpanishTranslateStatusOperationFilterInput
+  isFree: BooleanOperationFilterInput
+  price: ComparableDoubleOperationFilterInput
+  categoryId: ComparableInt32OperationFilterInput
+  category: CategoryFilterInput
+  slides: ListFilterInputTypeOfSlideFilterInput
+  userCourses: ListFilterInputTypeOfUserCourseFilterInput
+  exam: ExamFilterInput
+  courseTranslates: ListFilterInputTypeOfCourseTranslateFilterInput
+  id: ComparableInt32OperationFilterInput
+  isDeleted: BooleanOperationFilterInput
+  createdDate: ComparableDateTimeOperationFilterInput
+}
+
+input CourseSortInput {
+  title: SortEnumType
+  description: SortEnumType
+  mediaUrl: SortEnumType
+  mediaType: SortEnumType
+  courseStatus: SortEnumType
+  spanishTranslateStatus: SortEnumType
+  isFree: SortEnumType
+  price: SortEnumType
+  categoryId: SortEnumType
+  category: CategorySortInput
+  exam: ExamSortInput
+  id: SortEnumType
+  isDeleted: SortEnumType
+  createdDate: SortEnumType
+}
+
+type CourseCollectionSegment {
+  items: [Course]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: CollectionSegmentInfo!
+  totalCount: Int!
+}
+
+input FlaggedContentFilterInput {
+  and: [FlaggedContentFilterInput!]
+  or: [FlaggedContentFilterInput!]
+  text: StringOperationFilterInput
+  flaggedContentType: FlaggedContentTypeOperationFilterInput
+  project: ProjectFilterInput
+  projectId: ComparableNullableOfInt32OperationFilterInput
+  userProfile: UsersFilterInput
+  userProfileId: ComparableNullableOfInt32OperationFilterInput
+  projectImage: ProjectImagesFilterInput
+  projectImageId: ComparableNullableOfInt32OperationFilterInput
+  question: QuestionFilterInput
+  questionId: ComparableNullableOfInt32OperationFilterInput
+  bid: BidFilterInput
+  bidId: ComparableNullableOfInt32OperationFilterInput
+  userId: ComparableInt32OperationFilterInput
+  user: UsersFilterInput
+  id: ComparableInt32OperationFilterInput
+  isDeleted: BooleanOperationFilterInput
+  createdDate: ComparableDateTimeOperationFilterInput
+}
+
+input FlaggedContentSortInput {
+  text: SortEnumType
+  flaggedContentType: SortEnumType
+  project: ProjectSortInput
+  projectId: SortEnumType
+  userProfile: UsersSortInput
+  userProfileId: SortEnumType
+  projectImage: ProjectImagesSortInput
+  projectImageId: SortEnumType
+  question: QuestionSortInput
+  questionId: SortEnumType
+  bid: BidSortInput
+  bidId: SortEnumType
+  userId: SortEnumType
+  user: UsersSortInput
+  id: SortEnumType
+  isDeleted: SortEnumType
+  createdDate: SortEnumType
+}
+
+type FlaggedContentCollectionSegment {
+  items: [FlaggedContent]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: CollectionSegmentInfo!
+  totalCount: Int!
+}
+
+input TotalBalanceFromStripeFilterInput {
+  and: [TotalBalanceFromStripeFilterInput!]
+  or: [TotalBalanceFromStripeFilterInput!]
+  amount: ComparableNullableOfDoubleOperationFilterInput
+  id: ComparableInt32OperationFilterInput
+  isDeleted: BooleanOperationFilterInput
+  createdDate: ComparableDateTimeOperationFilterInput
+}
+
+input TotalBalanceFromStripeSortInput {
+  amount: SortEnumType
+  id: SortEnumType
+  isDeleted: SortEnumType
+  createdDate: SortEnumType
+}
+
+type TotalBalanceFromStripeCollectionSegment {
+  items: [TotalBalanceFromStripe]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: CollectionSegmentInfo!
+  totalCount: Int!
+}
+
+input ProjectAndUsersGrouptedByStateDtoFilterInput {
+  and: [ProjectAndUsersGrouptedByStateDtoFilterInput!]
+  or: [ProjectAndUsersGrouptedByStateDtoFilterInput!]
+  state: StringOperationFilterInput
+  projectCount: ComparableDoubleOperationFilterInput
+  userCount: ComparableDoubleOperationFilterInput
+  bidCount: ComparableDoubleOperationFilterInput
+}
+
+input ProjectAndUsersGrouptedByStateDtoSortInput {
+  state: SortEnumType
+  projectCount: SortEnumType
+  userCount: SortEnumType
+  bidCount: SortEnumType
+}
+
+type ProjectAndUsersGrouptedByStateDtoCollectionSegment {
+  items: [ProjectAndUsersGrouptedByStateDto]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: CollectionSegmentInfo!
+  totalCount: Int!
+}
+
+input LeaderBoardFilterInput {
+  and: [LeaderBoardFilterInput!]
+  or: [LeaderBoardFilterInput!]
+  leaderBoardType: LeaderBoardTypeOperationFilterInput
+  point: ComparableInt32OperationFilterInput
+  userId: ComparableInt32OperationFilterInput
+  user: UsersFilterInput
+  id: ComparableInt32OperationFilterInput
+  isDeleted: BooleanOperationFilterInput
+  createdDate: ComparableDateTimeOperationFilterInput
+}
+
+input LeaderBoardSortInput {
+  leaderBoardType: SortEnumType
+  point: SortEnumType
+  userId: SortEnumType
+  user: UsersSortInput
+  id: SortEnumType
+  isDeleted: SortEnumType
+  createdDate: SortEnumType
+}
+
+type LeaderBoardCollectionSegment {
+  items: [LeaderBoard]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: CollectionSegmentInfo!
+  totalCount: Int!
+}
+
+input CourseTopCategoryDtoFilterInput {
+  and: [CourseTopCategoryDtoFilterInput!]
+  or: [CourseTopCategoryDtoFilterInput!]
+  category: CategoryFilterInput
+  id: ComparableInt32OperationFilterInput
+  courseCount: ComparableInt32OperationFilterInput
+}
+
+input CourseTopCategoryDtoSortInput {
+  category: CategorySortInput
+  id: SortEnumType
+  courseCount: SortEnumType
+}
+
+type CourseTopCategoryDtoCollectionSegment {
+  items: [CourseTopCategoryDto]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: CollectionSegmentInfo!
+  totalCount: Int!
+}
+
+input PinCategoryFilterInput {
+  and: [PinCategoryFilterInput!]
+  or: [PinCategoryFilterInput!]
+  category: CategoryFilterInput
+  categoryId: ComparableInt32OperationFilterInput
+  userId: ComparableInt32OperationFilterInput
+  user: UsersFilterInput
+  id: ComparableInt32OperationFilterInput
+  isDeleted: BooleanOperationFilterInput
+  createdDate: ComparableDateTimeOperationFilterInput
+}
+
+input PinCategorySortInput {
+  category: CategorySortInput
+  categoryId: SortEnumType
+  userId: SortEnumType
+  user: UsersSortInput
+  id: SortEnumType
+  isDeleted: SortEnumType
+  createdDate: SortEnumType
+}
+
+type PinCategoryCollectionSegment {
+  items: [PinCategory]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: CollectionSegmentInfo!
+  totalCount: Int!
+}
+
+input CategoryDtoFilterInput {
+  and: [CategoryDtoFilterInput!]
+  or: [CategoryDtoFilterInput!]
+  category: CategoryFilterInput
+  isPined: BooleanOperationFilterInput
+  hasChild: BooleanOperationFilterInput
+  hasProjects: BooleanOperationFilterInput
+  projectCount: ComparableInt32OperationFilterInput
+  courseCount: ComparableInt32OperationFilterInput
+}
+
+input CategoryDtoSortInput {
+  category: CategorySortInput
+  isPined: SortEnumType
+  hasChild: SortEnumType
+  hasProjects: SortEnumType
+  projectCount: SortEnumType
+  courseCount: SortEnumType
+}
+
+type CategoryDtoCollectionSegment {
+  items: [CategoryDto]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: CollectionSegmentInfo!
+  totalCount: Int!
+}
+
+input CouponActivityDtoFilterInput {
+  and: [CouponActivityDtoFilterInput!]
+  or: [CouponActivityDtoFilterInput!]
+  userUsedCoupon: UserUsedCouponFilterInput
+  discountedAmount: ComparableDoubleOperationFilterInput
+}
+
+input CouponActivityDtoSortInput {
+  userUsedCoupon: UserUsedCouponSortInput
+  discountedAmount: SortEnumType
+}
+
+type CouponActivityDtoCollectionSegment {
+  items: [CouponActivityDto]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: CollectionSegmentInfo!
+  totalCount: Int!
+}
+
+input CouponDtoFilterInput {
+  and: [CouponDtoFilterInput!]
+  or: [CouponDtoFilterInput!]
+  coupon: CouponFilterInput
+  usedCount: ComparableInt32OperationFilterInput
+}
+
+input CouponDtoSortInput {
+  coupon: CouponSortInput
+  usedCount: SortEnumType
+}
+
+type CouponDtoCollectionSegment {
+  items: [CouponDto]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: CollectionSegmentInfo!
+  totalCount: Int!
+}
+
+input StripeCardDtoFilterInput {
+  and: [StripeCardDtoFilterInput!]
+  or: [StripeCardDtoFilterInput!]
+  id: StringOperationFilterInput
+  object: StringOperationFilterInput
+  accountId: StringOperationFilterInput
+  addressCity: StringOperationFilterInput
+  addressCountry: StringOperationFilterInput
+  addressLine1: StringOperationFilterInput
+  addressLine1Check: StringOperationFilterInput
+  addressLine2: StringOperationFilterInput
+  addressState: StringOperationFilterInput
+  addressZip: StringOperationFilterInput
+  addressZipCheck: StringOperationFilterInput
+  availablePayoutMethods: ListStringOperationFilterInput
+  brand: StringOperationFilterInput
+  country: StringOperationFilterInput
+  currency: StringOperationFilterInput
+  customerId: StringOperationFilterInput
+  cvcCheck: StringOperationFilterInput
+  defaultForCurrency: BooleanOperationFilterInput
+  deleted: BooleanOperationFilterInput
+  description: StringOperationFilterInput
+  dynamicLast4: StringOperationFilterInput
+  expMonth: ComparableInt64OperationFilterInput
+  expYear: ComparableInt64OperationFilterInput
+  fingerprint: StringOperationFilterInput
+  funding: StringOperationFilterInput
+  iin: StringOperationFilterInput
+  issuer: StringOperationFilterInput
+  last4: StringOperationFilterInput
+  name: StringOperationFilterInput
+  status: StringOperationFilterInput
+  tokenizationMethod: StringOperationFilterInput
+  metadata: DictionaryOfStringAndStringFilterInput
+}
+
+input StripeCardDtoSortInput {
+  id: SortEnumType
+  object: SortEnumType
+  accountId: SortEnumType
+  addressCity: SortEnumType
+  addressCountry: SortEnumType
+  addressLine1: SortEnumType
+  addressLine1Check: SortEnumType
+  addressLine2: SortEnumType
+  addressState: SortEnumType
+  addressZip: SortEnumType
+  addressZipCheck: SortEnumType
+  brand: SortEnumType
+  country: SortEnumType
+  currency: SortEnumType
+  customerId: SortEnumType
+  cvcCheck: SortEnumType
+  defaultForCurrency: SortEnumType
+  deleted: SortEnumType
+  description: SortEnumType
+  dynamicLast4: SortEnumType
+  expMonth: SortEnumType
+  expYear: SortEnumType
+  fingerprint: SortEnumType
+  funding: SortEnumType
+  iin: SortEnumType
+  issuer: SortEnumType
+  last4: SortEnumType
+  name: SortEnumType
+  status: SortEnumType
+  tokenizationMethod: SortEnumType
+}
+
+type StripeCardDtoCollectionSegment {
+  items: [StripeCardDto]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: CollectionSegmentInfo!
+  totalCount: Int!
+}
+
+input StripeAccountRequirementsErrorFilterInput {
+  and: [StripeAccountRequirementsErrorFilterInput!]
+  or: [StripeAccountRequirementsErrorFilterInput!]
+  code: StringOperationFilterInput
+  reason: StringOperationFilterInput
+  requirement: StringOperationFilterInput
+}
+
+input StripeAccountRequirementsErrorSortInput {
+  code: SortEnumType
+  reason: SortEnumType
+  requirement: SortEnumType
+}
+
+type StripeAccountRequirementsErrorCollectionSegment {
+  items: [StripeAccountRequirementsError]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: CollectionSegmentInfo!
+  totalCount: Int!
+}
+
+input PaymentFilterInput {
+  and: [PaymentFilterInput!]
+  or: [PaymentFilterInput!]
+  isDeletedAccount: BooleanOperationFilterInput
+  deleteAccountDate: ComparableDateTimeOperationFilterInput
+  stripeChargeOrTransferOrPaymentIntentId: StringOperationFilterInput
+  paymentStatus: PaymentStatusOperationFilterInput
+  paymentConfirmationStatus: PaymentConfirmationStatusOperationFilterInput
+  bid: BidFilterInput
+  bidId: ComparableNullableOfInt32OperationFilterInput
+  isCancellBid: BooleanOperationFilterInput
+  project: ProjectFilterInput
+  projectId: ComparableNullableOfInt32OperationFilterInput
+  userCourse: UserCourseFilterInput
+  userCourseId: ComparableNullableOfInt32OperationFilterInput
+  tazworkOrderId: ComparableNullableOfInt32OperationFilterInput
+  tazworkOrder: TazworkOrderFilterInput
+  createdAt: ComparableDateTimeOperationFilterInput
+  amount: ComparableDoubleOperationFilterInput
+  user: UsersFilterInput
+  userId: ComparableInt32OperationFilterInput
+  id: ComparableInt32OperationFilterInput
+  isDeleted: BooleanOperationFilterInput
+  createdDate: ComparableDateTimeOperationFilterInput
+}
+
+input PaymentSortInput {
+  isDeletedAccount: SortEnumType
+  deleteAccountDate: SortEnumType
+  stripeChargeOrTransferOrPaymentIntentId: SortEnumType
+  paymentStatus: SortEnumType
+  paymentConfirmationStatus: SortEnumType
+  bid: BidSortInput
+  bidId: SortEnumType
+  isCancellBid: SortEnumType
+  project: ProjectSortInput
+  projectId: SortEnumType
+  userCourse: UserCourseSortInput
+  userCourseId: SortEnumType
+  tazworkOrderId: SortEnumType
+  tazworkOrder: TazworkOrderSortInput
+  createdAt: SortEnumType
+  amount: SortEnumType
+  user: UsersSortInput
+  userId: SortEnumType
+  id: SortEnumType
+  isDeleted: SortEnumType
+  createdDate: SortEnumType
+}
+
+type PaymentCollectionSegment {
+  items: [Payment]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: CollectionSegmentInfo!
+  totalCount: Int!
+}
+
+input ReviewsDtoFilterInput {
+  and: [ReviewsDtoFilterInput!]
+  or: [ReviewsDtoFilterInput!]
+  score: ComparableDoubleOperationFilterInput
+  count: ComparableDoubleOperationFilterInput
+}
+
+input ReviewsDtoSortInput {
+  score: SortEnumType
+  count: SortEnumType
+}
+
+type ReviewsDtoCollectionSegment {
+  items: [ReviewsDto]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: CollectionSegmentInfo!
+  totalCount: Int!
+}
+
+input BidFilterInput {
+  and: [BidFilterInput!]
+  or: [BidFilterInput!]
+  isListerDeletedAccount: BooleanOperationFilterInput
+  listerDeleteAccountDate: ComparableDateTimeOperationFilterInput
+  isHuduDeletedAccount: BooleanOperationFilterInput
+  huduDeleteAccountDate: ComparableDateTimeOperationFilterInput
+  hasPayment: BooleanOperationFilterInput
+  bidStatus: BidStatusOperationFilterInput
+  cancellRequestStatus: NullableOfCancellRequestStatusOperationFilterInput
+  latestCancellRequestDate: ComparableNullableOfDateTimeOperationFilterInput
+  latestCancellRequestConfirmationDate: ComparableNullableOfDateTimeOperationFilterInput
+  cancelBidType: NullableOfCancelBidTypeOperationFilterInput
+  cancellationReason: StringOperationFilterInput
+  affectedToHighestProjectCompletionRate: BooleanOperationFilterInput
+  awardDate: ComparableNullableOfDateTimeOperationFilterInput
+  huduFinishedProjectDate: ComparableNullableOfDateTimeOperationFilterInput
+  amount: ComparableDoubleOperationFilterInput
+  description: StringOperationFilterInput
+  hudusComment: StringOperationFilterInput
+  hudusRate: StringOperationFilterInput
+  isHuduCommented: BooleanOperationFilterInput
+  listersComment: StringOperationFilterInput
+  listersRate: StringOperationFilterInput
+  isListerCommented: BooleanOperationFilterInput
+  huduerWorkedHours: ComparableNullableOfDoubleOperationFilterInput
+  hudu: UsersFilterInput
+  huduId: ComparableInt32OperationFilterInput
+  lister: UsersFilterInput
+  listerId: ComparableInt32OperationFilterInput
+  project: ProjectFilterInput
+  projectId: ComparableInt32OperationFilterInput
+  payments: ListFilterInputTypeOfPaymentFilterInput
+  notifications: ListFilterInputTypeOfNotificationFilterInput
+  bidAnswerToQuestions: ListFilterInputTypeOfBidAnswerToQuestionFilterInput
+  id: ComparableInt32OperationFilterInput
+  isDeleted: BooleanOperationFilterInput
+  createdDate: ComparableDateTimeOperationFilterInput
+}
+
+input BidSortInput {
+  isListerDeletedAccount: SortEnumType
+  listerDeleteAccountDate: SortEnumType
+  isHuduDeletedAccount: SortEnumType
+  huduDeleteAccountDate: SortEnumType
+  hasPayment: SortEnumType
+  bidStatus: SortEnumType
+  cancellRequestStatus: SortEnumType
+  latestCancellRequestDate: SortEnumType
+  latestCancellRequestConfirmationDate: SortEnumType
+  cancelBidType: SortEnumType
+  cancellationReason: SortEnumType
+  affectedToHighestProjectCompletionRate: SortEnumType
+  awardDate: SortEnumType
+  huduFinishedProjectDate: SortEnumType
+  amount: SortEnumType
+  description: SortEnumType
+  hudusComment: SortEnumType
+  hudusRate: SortEnumType
+  isHuduCommented: SortEnumType
+  listersComment: SortEnumType
+  listersRate: SortEnumType
+  isListerCommented: SortEnumType
+  huduerWorkedHours: SortEnumType
+  hudu: UsersSortInput
+  huduId: SortEnumType
+  lister: UsersSortInput
+  listerId: SortEnumType
+  project: ProjectSortInput
+  projectId: SortEnumType
+  id: SortEnumType
+  isDeleted: SortEnumType
+  createdDate: SortEnumType
+}
+
+type BidCollectionSegment {
+  items: [Bid]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: CollectionSegmentInfo!
+  totalCount: Int!
+}
+
+input EnthusiasticCistyStatesGrouptedByStateDtoFilterInput {
+  and: [EnthusiasticCistyStatesGrouptedByStateDtoFilterInput!]
+  or: [EnthusiasticCistyStatesGrouptedByStateDtoFilterInput!]
+  state: StringOperationFilterInput
+  stateCount: ComparableInt32OperationFilterInput
+}
+
+input EnthusiasticCistyStatesGrouptedByStateDtoSortInput {
+  state: SortEnumType
+  stateCount: SortEnumType
+}
+
+type EnthusiasticCistyStatesGrouptedByStateDtoCollectionSegment {
+  items: [EnthusiasticCistyStatesGrouptedByStateDto]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: CollectionSegmentInfo!
+  totalCount: Int!
+}
+
+input EnthusiasticCistyStateFilterInput {
+  and: [EnthusiasticCistyStateFilterInput!]
+  or: [EnthusiasticCistyStateFilterInput!]
+  state: StringOperationFilterInput
+  city: StringOperationFilterInput
+  userId: ComparableInt32OperationFilterInput
+  user: UsersFilterInput
+  id: ComparableInt32OperationFilterInput
+  isDeleted: BooleanOperationFilterInput
+  createdDate: ComparableDateTimeOperationFilterInput
+}
+
+input EnthusiasticCistyStateSortInput {
+  state: SortEnumType
+  city: SortEnumType
+  userId: SortEnumType
+  user: UsersSortInput
+  id: SortEnumType
+  isDeleted: SortEnumType
+  createdDate: SortEnumType
+}
+
+type EnthusiasticCistyStateCollectionSegment {
+  items: [EnthusiasticCistyState]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: CollectionSegmentInfo!
+  totalCount: Int!
+}
+
+input GetProjectIBidOnFilterInput {
+  and: [GetProjectIBidOnFilterInput!]
+  or: [GetProjectIBidOnFilterInput!]
+  projectStatus: ProjectStatusOperationFilterInput
+  projectCount: ComparableDoubleOperationFilterInput
+  bidCount: ComparableDoubleOperationFilterInput
+}
+
+input GetProjectIBidOnSortInput {
+  projectStatus: SortEnumType
+  projectCount: SortEnumType
+  bidCount: SortEnumType
+}
+
+type GetProjectIBidOnCollectionSegment {
+  items: [GetProjectIBidOn]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: CollectionSegmentInfo!
+  totalCount: Int!
+}
+
+input ProjectsGrouptedByCityDtoFilterInput {
+  and: [ProjectsGrouptedByCityDtoFilterInput!]
+  or: [ProjectsGrouptedByCityDtoFilterInput!]
+  count: ComparableInt32OperationFilterInput
+  city: StringOperationFilterInput
+  longitude: ComparableDoubleOperationFilterInput
+  latitude: ComparableDoubleOperationFilterInput
+  zipCode: StringOperationFilterInput
+}
+
+input ProjectsGrouptedByCityDtoSortInput {
+  count: SortEnumType
+  city: SortEnumType
+  longitude: SortEnumType
+  latitude: SortEnumType
+  zipCode: SortEnumType
+}
+
+type ProjectsGrouptedByCityDtoCollectionSegment {
+  items: [ProjectsGrouptedByCityDto]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: CollectionSegmentInfo!
+  totalCount: Int!
+}
+
+input QuestionsDtoFilterInput {
+  and: [QuestionsDtoFilterInput!]
+  or: [QuestionsDtoFilterInput!]
+  question: QuestionFilterInput
+  isUpVoted: BooleanOperationFilterInput
+}
+
+input QuestionsDtoSortInput {
+  question: QuestionSortInput
+  isUpVoted: SortEnumType
+}
+
+type QuestionsDtoCollectionSegment {
+  items: [QuestionsDto]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: CollectionSegmentInfo!
+  totalCount: Int!
+}
+
+input ProjectImagesFilterInput {
+  and: [ProjectImagesFilterInput!]
+  or: [ProjectImagesFilterInput!]
+  imageAddress: StringOperationFilterInput
+  alt: StringOperationFilterInput
+  project: ProjectFilterInput
+  projectId: ComparableInt32OperationFilterInput
+  id: ComparableInt32OperationFilterInput
+  isDeleted: BooleanOperationFilterInput
+  createdDate: ComparableDateTimeOperationFilterInput
+}
+
+input ProjectImagesSortInput {
+  imageAddress: SortEnumType
+  alt: SortEnumType
+  project: ProjectSortInput
+  projectId: SortEnumType
+  id: SortEnumType
+  isDeleted: SortEnumType
+  createdDate: SortEnumType
+}
+
+type ProjectImagesCollectionSegment {
+  items: [ProjectImages]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: CollectionSegmentInfo!
+  totalCount: Int!
+}
+
+input ProjectDtoFilterInput {
+  and: [ProjectDtoFilterInput!]
+  or: [ProjectDtoFilterInput!]
+  isBidder: BooleanOperationFilterInput
+  project: ProjectFilterInput
+  isLiked: BooleanOperationFilterInput
+  bids: ListFilterInputTypeOfBidFilterInput
+  currentLowBid: ComparableDoubleOperationFilterInput
+  lowestBid: LowestBidDtoFilterInput
+  currentDoer: UsersFilterInput
+  yourLowesBid: ComparableNullableOfDoubleOperationFilterInput
+  isHuduFinished: BooleanOperationFilterInput
+  projectQuestions: ListStringOperationFilterInput
+  awardedBid: BidFilterInput
+}
+
+input ProjectDtoSortInput {
+  isBidder: SortEnumType
+  project: ProjectSortInput
+  isLiked: SortEnumType
+  currentLowBid: SortEnumType
+  lowestBid: LowestBidDtoSortInput
+  currentDoer: UsersSortInput
+  yourLowesBid: SortEnumType
+  isHuduFinished: SortEnumType
+  awardedBid: BidSortInput
+}
+
+type ProjectDtoCollectionSegment {
+  items: [ProjectDto]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: CollectionSegmentInfo!
+  totalCount: Int!
+}
+
+input NotificationFilterInput {
+  and: [NotificationFilterInput!]
+  or: [NotificationFilterInput!]
+  sender: UsersFilterInput
+  senderId: ComparableNullableOfInt32OperationFilterInput
+  isDeletedAccount: BooleanOperationFilterInput
+  deleteAccountDate: ComparableDateTimeOperationFilterInput
+  title: StringOperationFilterInput
+  description: StringOperationFilterInput
+  spanishTitle: StringOperationFilterInput
+  spanishDescription: StringOperationFilterInput
+  isReaded: BooleanOperationFilterInput
+  notificationType: NotificationTypeOperationFilterInput
+  project: ProjectFilterInput
+  projectId: ComparableNullableOfInt32OperationFilterInput
+  bid: BidFilterInput
+  bidId: ComparableNullableOfInt32OperationFilterInput
+  question: QuestionFilterInput
+  questionId: ComparableNullableOfInt32OperationFilterInput
+  messages: MessagesFilterInput
+  messagesId: ComparableNullableOfInt32OperationFilterInput
+  userId: ComparableInt32OperationFilterInput
+  user: UsersFilterInput
+  id: ComparableInt32OperationFilterInput
+  isDeleted: BooleanOperationFilterInput
+  createdDate: ComparableDateTimeOperationFilterInput
+}
+
+input NotificationSortInput {
+  sender: UsersSortInput
+  senderId: SortEnumType
+  isDeletedAccount: SortEnumType
+  deleteAccountDate: SortEnumType
+  title: SortEnumType
+  description: SortEnumType
+  spanishTitle: SortEnumType
+  spanishDescription: SortEnumType
+  isReaded: SortEnumType
+  notificationType: SortEnumType
+  project: ProjectSortInput
+  projectId: SortEnumType
+  bid: BidSortInput
+  bidId: SortEnumType
+  question: QuestionSortInput
+  questionId: SortEnumType
+  messages: MessagesSortInput
+  messagesId: SortEnumType
+  userId: SortEnumType
+  user: UsersSortInput
+  id: SortEnumType
+  isDeleted: SortEnumType
+  createdDate: SortEnumType
+}
+
+type NotificationCollectionSegment {
+  items: [Notification]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: CollectionSegmentInfo!
+  totalCount: Int!
+}
+
+input ConversationsProjectDtoFilterInput {
+  and: [ConversationsProjectDtoFilterInput!]
+  or: [ConversationsProjectDtoFilterInput!]
+  project: ProjectFilterInput
+  latestMessage: StringOperationFilterInput
+  latestMessageDate: ComparableDateTimeOperationFilterInput
+  conversation: ConversationsFilterInput
+}
+
+input ConversationsProjectDtoSortInput {
+  project: ProjectSortInput
+  latestMessage: SortEnumType
+  latestMessageDate: SortEnumType
+  conversation: ConversationsSortInput
+}
+
+type ConversationsProjectDtoCollectionSegment {
+  items: [ConversationsProjectDto]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: CollectionSegmentInfo!
+  totalCount: Int!
+}
+
+input MessagesFilterInput {
+  and: [MessagesFilterInput!]
+  or: [MessagesFilterInput!]
+  messageType: MessageTypesOperationFilterInput
+  photoUrl: StringOperationFilterInput
+  isEdited: BooleanOperationFilterInput
+  notifications: ListFilterInputTypeOfNotificationFilterInput
+  createdAt: ComparableDateTimeOperationFilterInput
+  conversationId: ComparableInt32OperationFilterInput
+  conversation: ConversationsFilterInput
+  senderId: ComparableInt32OperationFilterInput
+  sender: UsersFilterInput
+  text: StringOperationFilterInput
+  id: ComparableInt32OperationFilterInput
+  isDeleted: BooleanOperationFilterInput
+  createdDate: ComparableDateTimeOperationFilterInput
+}
+
+input MessagesSortInput {
+  messageType: SortEnumType
+  photoUrl: SortEnumType
+  isEdited: SortEnumType
+  createdAt: SortEnumType
+  conversationId: SortEnumType
+  conversation: ConversationsSortInput
+  senderId: SortEnumType
+  sender: UsersSortInput
+  text: SortEnumType
+  id: SortEnumType
+  isDeleted: SortEnumType
+  createdDate: SortEnumType
+}
+
+type MessagesCollectionSegment {
+  items: [Messages]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: CollectionSegmentInfo!
+  totalCount: Int!
+}
+
+input UserMessageGroupFilterInput {
+  and: [UserMessageGroupFilterInput!]
+  or: [UserMessageGroupFilterInput!]
+  conversationId: ComparableInt32OperationFilterInput
+  conversation: ConversationsFilterInput
+  isAdmin: BooleanOperationFilterInput
+  unreadCount: ComparableInt32OperationFilterInput
+  userId: ComparableInt32OperationFilterInput
+  user: UsersFilterInput
+  id: ComparableInt32OperationFilterInput
+  isDeleted: BooleanOperationFilterInput
+  createdDate: ComparableDateTimeOperationFilterInput
+}
+
+input UserMessageGroupSortInput {
+  conversationId: SortEnumType
+  conversation: ConversationsSortInput
+  isAdmin: SortEnumType
+  unreadCount: SortEnumType
+  userId: SortEnumType
+  user: UsersSortInput
+  id: SortEnumType
+  isDeleted: SortEnumType
+  createdDate: SortEnumType
+}
+
+type UserMessageGroupCollectionSegment {
+  items: [UserMessageGroup]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: CollectionSegmentInfo!
+  totalCount: Int!
+}
+
+input ConversationDtoFilterInput {
+  and: [ConversationDtoFilterInput!]
+  or: [ConversationDtoFilterInput!]
+  projectId: ComparableNullableOfInt32OperationFilterInput
+  userEmail: StringOperationFilterInput
+  userFirstName: StringOperationFilterInput
+  userLastName: StringOperationFilterInput
+  subject: StringOperationFilterInput
+  userName: StringOperationFilterInput
+  userId: ComparableNullableOfInt32OperationFilterInput
+  imageAddress: StringOperationFilterInput
+  projectNames: ListStringOperationFilterInput
+  isGroup: BooleanOperationFilterInput
+  groupImage: StringOperationFilterInput
+  groupName: StringOperationFilterInput
+  groupDescription: StringOperationFilterInput
+  isMemberOfGroup: BooleanOperationFilterInput
+  conversationId: ComparableInt32OperationFilterInput
+  user: UsersFilterInput
+  unreadCount: ComparableInt32OperationFilterInput
+  latestMessageDate: ComparableDateTimeOperationFilterInput
+}
+
+input ConversationDtoSortInput {
+  projectId: SortEnumType
+  userEmail: SortEnumType
+  userFirstName: SortEnumType
+  userLastName: SortEnumType
+  subject: SortEnumType
+  userName: SortEnumType
+  userId: SortEnumType
+  imageAddress: SortEnumType
+  isGroup: SortEnumType
+  groupImage: SortEnumType
+  groupName: SortEnumType
+  groupDescription: SortEnumType
+  isMemberOfGroup: SortEnumType
+  conversationId: SortEnumType
+  user: UsersSortInput
+  unreadCount: SortEnumType
+  latestMessageDate: SortEnumType
+}
+
+type ConversationDtoCollectionSegment {
+  items: [ConversationDto]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: CollectionSegmentInfo!
+  totalCount: Int!
+}
+
+input EmailTemplateFilterInput {
+  and: [EmailTemplateFilterInput!]
+  or: [EmailTemplateFilterInput!]
+  email: StringOperationFilterInput
+  text: StringOperationFilterInput
+  spanishText: StringOperationFilterInput
+  emailTemplateType: EmailTemplateTypeOperationFilterInput
+  id: ComparableInt32OperationFilterInput
+  isDeleted: BooleanOperationFilterInput
+  createdDate: ComparableDateTimeOperationFilterInput
+}
+
+input EmailTemplateSortInput {
+  email: SortEnumType
+  text: SortEnumType
+  spanishText: SortEnumType
+  emailTemplateType: SortEnumType
+  id: SortEnumType
+  isDeleted: SortEnumType
+  createdDate: SortEnumType
+}
+
+type EmailTemplateCollectionSegment {
+  items: [EmailTemplate]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: CollectionSegmentInfo!
+  totalCount: Int!
+}
+
+input ActiveUsersFilterInput {
+  and: [ActiveUsersFilterInput!]
+  or: [ActiveUsersFilterInput!]
+  activeUserCount: ComparableInt32OperationFilterInput
+  activeUsersId: StringOperationFilterInput
+  id: ComparableInt32OperationFilterInput
+  isDeleted: BooleanOperationFilterInput
+  createdDate: ComparableDateTimeOperationFilterInput
+}
+
+input ActiveUsersSortInput {
+  activeUserCount: SortEnumType
+  activeUsersId: SortEnumType
+  id: SortEnumType
+  isDeleted: SortEnumType
+  createdDate: SortEnumType
+}
+
+type ActiveUsersCollectionSegment {
+  items: [ActiveUsers]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: CollectionSegmentInfo!
+  totalCount: Int!
+}
+
+input UserDtoSafeFilterInput {
+  and: [UserDtoSafeFilterInput!]
+  or: [UserDtoSafeFilterInput!]
+  id: ComparableInt32OperationFilterInput
+  userName: StringOperationFilterInput
+  email: StringOperationFilterInput
+  userTypes: UserTypesOperationFilterInput
+  imageAddress: StringOperationFilterInput
+}
+
+input UserDtoSafeSortInput {
+  id: SortEnumType
+  userName: SortEnumType
+  email: SortEnumType
+  userTypes: SortEnumType
+  imageAddress: SortEnumType
+}
+
+type UserDtoSafeCollectionSegment {
+  items: [UserDtoSafe]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: CollectionSegmentInfo!
+  totalCount: Int!
+}
+
+input UsersFilterInput {
+  and: [UsersFilterInput!]
+  or: [UsersFilterInput!]
+  wallet: ComparableNullableOfDecimalOperationFilterInput
+  isVerified: BooleanOperationFilterInput
+  isDeletedAccount: BooleanOperationFilterInput
+  deleteAccountDate: ComparableDateTimeOperationFilterInput
+  stripeAccountId: StringOperationFilterInput
+  stripeCustomerId: StringOperationFilterInput
+  userName: StringOperationFilterInput
+  lastSeen: ComparableDateTimeOperationFilterInput
+  userTypes: UserTypesOperationFilterInput
+  imageAddress: StringOperationFilterInput
+  firstName: StringOperationFilterInput
+  lastName: StringOperationFilterInput
+  bio: StringOperationFilterInput
+  streetAddress: StringOperationFilterInput
+  city: StringOperationFilterInput
+  state: StringOperationFilterInput
+  phoneNumber: StringOperationFilterInput
+  phoneNumberConfirmed: BooleanOperationFilterInput
+  isActive: BooleanOperationFilterInput
+  inviteCode: ComparableInt32OperationFilterInput
+  inviteCodeExpireDate: ComparableDateTimeOperationFilterInput
+  isSignUpDone: BooleanOperationFilterInput
+  longitude: ComparableDoubleOperationFilterInput
+  latitude: ComparableDoubleOperationFilterInput
+  zipCode: StringOperationFilterInput
+  projectNotification: BooleanOperationFilterInput
+  bidNotification: BooleanOperationFilterInput
+  chatNotification: BooleanOperationFilterInput
+  questionNotification: BooleanOperationFilterInput
+  isUsedReferallDiscount: BooleanOperationFilterInput
+  referallDiscountProjectId: ComparableNullableOfInt32OperationFilterInput
+  asHuduRates: ComparableNullableOfDoubleOperationFilterInput
+  asListerRates: ComparableNullableOfDoubleOperationFilterInput
+  averageRate: ComparableNullableOfDoubleOperationFilterInput
+  highestProjectCompletionRate: ComparableNullableOfDoubleOperationFilterInput
+  listersWhoRatedToMeCount: ComparableInt32OperationFilterInput
+  huduersWhoRatedToMeCount: ComparableInt32OperationFilterInput
+  averHuduerWorkedHours: ComparableNullableOfDoubleOperationFilterInput
+  lastActivityDate: ComparableNullableOfDateTimeOperationFilterInput
+  lastLoginDate: ComparableNullableOfDateTimeOperationFilterInput
+  lastBidDate: ComparableNullableOfDateTimeOperationFilterInput
+  lastListingDate: ComparableNullableOfDateTimeOperationFilterInput
+  lastCommentDate: ComparableNullableOfDateTimeOperationFilterInput
+  leaderBoardPoint: ComparableInt32OperationFilterInput
+  languageType: LanguageTypeOperationFilterInput
+  totalRewardedFromReferall: ComparableDoubleOperationFilterInput
+  earnPtsFromReferall: ComparableDoubleOperationFilterInput
+  userUsedCoupons: ListFilterInputTypeOfUserUsedCouponFilterInput
+  userImages: ListFilterInputTypeOfUserImageFilterInput
+  userCourses: ListFilterInputTypeOfUserCourseFilterInput
+  tazworkOrders: ListFilterInputTypeOfTazworkOrderFilterInput
+  applicantGuid: StringOperationFilterInput
+  backgroundCheckStatus: BackgroundCheckStatusOperationFilterInput
+  externalId: StringOperationFilterInput
+  email: StringOperationFilterInput
+  id: ComparableInt32OperationFilterInput
+  isDeleted: BooleanOperationFilterInput
+  createdDate: ComparableDateTimeOperationFilterInput
+}
+
+input UsersSortInput {
+  wallet: SortEnumType
+  isVerified: SortEnumType
+  isDeletedAccount: SortEnumType
+  deleteAccountDate: SortEnumType
+  stripeAccountId: SortEnumType
+  stripeCustomerId: SortEnumType
+  userName: SortEnumType
+  lastSeen: SortEnumType
+  userTypes: SortEnumType
+  imageAddress: SortEnumType
+  firstName: SortEnumType
+  lastName: SortEnumType
+  bio: SortEnumType
+  streetAddress: SortEnumType
+  city: SortEnumType
+  state: SortEnumType
+  phoneNumber: SortEnumType
+  phoneNumberConfirmed: SortEnumType
+  isActive: SortEnumType
+  inviteCode: SortEnumType
+  inviteCodeExpireDate: SortEnumType
+  isSignUpDone: SortEnumType
+  longitude: SortEnumType
+  latitude: SortEnumType
+  zipCode: SortEnumType
+  projectNotification: SortEnumType
+  bidNotification: SortEnumType
+  chatNotification: SortEnumType
+  questionNotification: SortEnumType
+  isUsedReferallDiscount: SortEnumType
+  referallDiscountProjectId: SortEnumType
+  asHuduRates: SortEnumType
+  asListerRates: SortEnumType
+  averageRate: SortEnumType
+  highestProjectCompletionRate: SortEnumType
+  listersWhoRatedToMeCount: SortEnumType
+  huduersWhoRatedToMeCount: SortEnumType
+  averHuduerWorkedHours: SortEnumType
+  lastActivityDate: SortEnumType
+  lastLoginDate: SortEnumType
+  lastBidDate: SortEnumType
+  lastListingDate: SortEnumType
+  lastCommentDate: SortEnumType
+  leaderBoardPoint: SortEnumType
+  languageType: SortEnumType
+  totalRewardedFromReferall: SortEnumType
+  earnPtsFromReferall: SortEnumType
+  applicantGuid: SortEnumType
+  backgroundCheckStatus: SortEnumType
+  externalId: SortEnumType
+  email: SortEnumType
+  id: SortEnumType
+  isDeleted: SortEnumType
+  createdDate: SortEnumType
+}
+
+type UsersCollectionSegment {
+  items: [Users]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: CollectionSegmentInfo!
+  totalCount: Int!
+}
+
+input UserDtoFilterInput {
+  and: [UserDtoFilterInput!]
+  or: [UserDtoFilterInput!]
+  user: UsersFilterInput
+  numberOfProject: ComparableInt32OperationFilterInput
+  numberOfAwardedProjects: ComparableInt32OperationFilterInput
+  numberOfDoneProjects: ComparableInt32OperationFilterInput
+  hasInProgressProject: BooleanOperationFilterInput
+  hasInProgressBidAsLister: BooleanOperationFilterInput
+  hasInProgressBidAsHuduer: BooleanOperationFilterInput
+}
+
+input UserDtoSortInput {
+  user: UsersSortInput
+  numberOfProject: SortEnumType
+  numberOfAwardedProjects: SortEnumType
+  numberOfDoneProjects: SortEnumType
+  hasInProgressProject: SortEnumType
+  hasInProgressBidAsLister: SortEnumType
+  hasInProgressBidAsHuduer: SortEnumType
+}
+
+type UserDtoCollectionSegment {
+  items: [UserDto]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: CollectionSegmentInfo!
+  totalCount: Int!
+}
+
+input UserImageFilterInput {
+  and: [UserImageFilterInput!]
+  or: [UserImageFilterInput!]
+  imageAddress: StringOperationFilterInput
+  userId: ComparableInt32OperationFilterInput
+  user: UsersFilterInput
+  id: ComparableInt32OperationFilterInput
+  isDeleted: BooleanOperationFilterInput
+  createdDate: ComparableDateTimeOperationFilterInput
+}
+
+input UserImageSortInput {
+  imageAddress: SortEnumType
+  userId: SortEnumType
+  user: UsersSortInput
+  id: SortEnumType
+  isDeleted: SortEnumType
+  createdDate: SortEnumType
+}
+
+type UserImageCollectionSegment {
+  items: [UserImage]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: CollectionSegmentInfo!
+  totalCount: Int!
+}
+
+input UserAddressFilterInput {
+  and: [UserAddressFilterInput!]
+  or: [UserAddressFilterInput!]
+  addressTitle: StringOperationFilterInput
+  streetAddress: StringOperationFilterInput
+  city: StringOperationFilterInput
+  state: StringOperationFilterInput
+  longitude: ComparableDoubleOperationFilterInput
+  latitude: ComparableDoubleOperationFilterInput
+  zipCode: StringOperationFilterInput
+  userId: ComparableInt32OperationFilterInput
+  user: UsersFilterInput
+  id: ComparableInt32OperationFilterInput
+  isDeleted: BooleanOperationFilterInput
+  createdDate: ComparableDateTimeOperationFilterInput
+}
+
+input UserAddressSortInput {
+  addressTitle: SortEnumType
+  streetAddress: SortEnumType
+  city: SortEnumType
+  state: SortEnumType
+  longitude: SortEnumType
+  latitude: SortEnumType
+  zipCode: SortEnumType
+  userId: SortEnumType
+  user: UsersSortInput
+  id: SortEnumType
+  isDeleted: SortEnumType
+  createdDate: SortEnumType
+}
+
+type UserAddressCollectionSegment {
+  items: [UserAddress]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: CollectionSegmentInfo!
+  totalCount: Int!
+}
+
+input UsersDocumentFilterInput {
+  and: [UsersDocumentFilterInput!]
+  or: [UsersDocumentFilterInput!]
+  fileName: StringOperationFilterInput
+  file: StringOperationFilterInput
+  userId: ComparableInt32OperationFilterInput
+  user: UsersFilterInput
+  id: ComparableInt32OperationFilterInput
+  isDeleted: BooleanOperationFilterInput
+  createdDate: ComparableDateTimeOperationFilterInput
+}
+
+input UsersDocumentSortInput {
+  fileName: SortEnumType
+  file: SortEnumType
+  userId: SortEnumType
+  user: UsersSortInput
+  id: SortEnumType
+  isDeleted: SortEnumType
+  createdDate: SortEnumType
+}
+
+type UsersDocumentCollectionSegment {
+  items: [UsersDocument]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: CollectionSegmentInfo!
+  totalCount: Int!
+}
+
+input AppRateFilterInput {
+  and: [AppRateFilterInput!]
+  or: [AppRateFilterInput!]
+  rate: ComparableInt32OperationFilterInput
+  text: StringOperationFilterInput
+  userId: ComparableInt32OperationFilterInput
+  user: UsersFilterInput
+  id: ComparableInt32OperationFilterInput
+  isDeleted: BooleanOperationFilterInput
+  createdDate: ComparableDateTimeOperationFilterInput
+}
+
+input AppRateSortInput {
+  rate: SortEnumType
+  text: SortEnumType
+  userId: SortEnumType
+  user: UsersSortInput
+  id: SortEnumType
+  isDeleted: SortEnumType
+  createdDate: SortEnumType
+}
+
+type AppRateCollectionSegment {
+  items: [AppRate]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: CollectionSegmentInfo!
+  totalCount: Int!
+}
+
+input FlagTextFilterInput {
+  and: [FlagTextFilterInput!]
+  or: [FlagTextFilterInput!]
+  text: StringOperationFilterInput
+  id: ComparableInt32OperationFilterInput
+  isDeleted: BooleanOperationFilterInput
+  createdDate: ComparableDateTimeOperationFilterInput
+}
+
+input FlagTextSortInput {
+  text: SortEnumType
+  id: SortEnumType
+  isDeleted: SortEnumType
+  createdDate: SortEnumType
+}
+
+type FlagTextCollectionSegment {
+  items: [FlagText]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: CollectionSegmentInfo!
+  totalCount: Int!
+}
+
+input RegisteredUserByReferallFilterInput {
+  and: [RegisteredUserByReferallFilterInput!]
+  or: [RegisteredUserByReferallFilterInput!]
+  referallCode: StringOperationFilterInput
+  amount: ComparableNullableOfDoubleOperationFilterInput
+  hasFinishedProject: BooleanOperationFilterInput
+  isPaidToUser: BooleanOperationFilterInput
+  referalOwner: UsersFilterInput
+  referalOwnerId: ComparableInt32OperationFilterInput
+  referalUser: UsersFilterInput
+  referalUserId: ComparableInt32OperationFilterInput
+  project: ProjectFilterInput
+  projectId: ComparableNullableOfInt32OperationFilterInput
+  id: ComparableInt32OperationFilterInput
+  isDeleted: BooleanOperationFilterInput
+  createdDate: ComparableDateTimeOperationFilterInput
+}
+
+input RegisteredUserByReferallSortInput {
+  referallCode: SortEnumType
+  amount: SortEnumType
+  hasFinishedProject: SortEnumType
+  isPaidToUser: SortEnumType
+  referalOwner: UsersSortInput
+  referalOwnerId: SortEnumType
+  referalUser: UsersSortInput
+  referalUserId: SortEnumType
+  project: ProjectSortInput
+  projectId: SortEnumType
+  id: SortEnumType
+  isDeleted: SortEnumType
+  createdDate: SortEnumType
+}
+
+type RegisteredUserByReferallCollectionSegment {
+  items: [RegisteredUserByReferall]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: CollectionSegmentInfo!
+  totalCount: Int!
+}
+
+input ReferallFilterInput {
+  and: [ReferallFilterInput!]
+  or: [ReferallFilterInput!]
+  referallCode: StringOperationFilterInput
+  userId: ComparableInt32OperationFilterInput
+  user: UsersFilterInput
+  id: ComparableInt32OperationFilterInput
+  isDeleted: BooleanOperationFilterInput
+  createdDate: ComparableDateTimeOperationFilterInput
+}
+
+input ReferallSortInput {
+  referallCode: SortEnumType
+  userId: SortEnumType
+  user: UsersSortInput
+  id: SortEnumType
+  isDeleted: SortEnumType
+  createdDate: SortEnumType
+}
+
+type ReferallCollectionSegment {
+  items: [Referall]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: CollectionSegmentInfo!
+  totalCount: Int!
+}
+
+input UserLikeProjectFilterInput {
+  and: [UserLikeProjectFilterInput!]
+  or: [UserLikeProjectFilterInput!]
+  isDeletedAccount: BooleanOperationFilterInput
+  deleteAccountDate: ComparableDateTimeOperationFilterInput
+  projectId: ComparableInt32OperationFilterInput
+  project: ProjectFilterInput
+  userId: ComparableInt32OperationFilterInput
+  user: UsersFilterInput
+  id: ComparableInt32OperationFilterInput
+  isDeleted: BooleanOperationFilterInput
+  createdDate: ComparableDateTimeOperationFilterInput
+}
+
+input UserLikeProjectSortInput {
+  isDeletedAccount: SortEnumType
+  deleteAccountDate: SortEnumType
+  projectId: SortEnumType
+  project: ProjectSortInput
+  userId: SortEnumType
+  user: UsersSortInput
+  id: SortEnumType
+  isDeleted: SortEnumType
+  createdDate: SortEnumType
+}
+
+type UserLikeProjectCollectionSegment {
+  items: [UserLikeProject]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: CollectionSegmentInfo!
+  totalCount: Int!
+}
+
+input CategoryFilterInput {
+  and: [CategoryFilterInput!]
+  or: [CategoryFilterInput!]
+  text: StringOperationFilterInput
+  spanishText: StringOperationFilterInput
+  userId: ComparableInt32OperationFilterInput
+  user: UsersFilterInput
+  parentId: ComparableNullableOfInt32OperationFilterInput
+  parent: CategoryFilterInput
+  courses: ListFilterInputTypeOfCourseFilterInput
+  id: ComparableInt32OperationFilterInput
+  isDeleted: BooleanOperationFilterInput
+  createdDate: ComparableDateTimeOperationFilterInput
+}
+
+input CategorySortInput {
+  text: SortEnumType
+  spanishText: SortEnumType
+  userId: SortEnumType
+  user: UsersSortInput
+  parentId: SortEnumType
+  parent: CategorySortInput
+  id: SortEnumType
+  isDeleted: SortEnumType
+  createdDate: SortEnumType
+}
+
+type CategoryCollectionSegment {
+  items: [Category]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: CollectionSegmentInfo!
+  totalCount: Int!
+}
+
+input BadgeTypeOperationFilterInput {
+  eq: BadgeType
+  neq: BadgeType
+  in: [BadgeType!]
+  nin: [BadgeType!]
+}
+
+input BadgeLevelOperationFilterInput {
+  eq: BadgeLevel
+  neq: BadgeLevel
+  in: [BadgeLevel!]
+  nin: [BadgeLevel!]
+}
+
+input StringOperationFilterInput {
+  and: [StringOperationFilterInput!]
+  or: [StringOperationFilterInput!]
+  eq: String
+  neq: String
+  contains: String
+  ncontains: String
+  in: [String]
+  nin: [String]
+  startsWith: String
+  nstartsWith: String
+  endsWith: String
+  nendsWith: String
+}
+
+input ComparableInt32OperationFilterInput {
+  eq: Int
+  neq: Int
+  in: [Int!]
+  nin: [Int!]
+  gt: Int
+  ngt: Int
+  gte: Int
+  ngte: Int
+  lt: Int
+  nlt: Int
+  lte: Int
+  nlte: Int
+}
+
+input BooleanOperationFilterInput {
+  eq: Boolean
+  neq: Boolean
+}
+
+input ComparableDateTimeOperationFilterInput {
+  eq: DateTime
+  neq: DateTime
+  in: [DateTime!]
+  nin: [DateTime!]
+  gt: DateTime
+  ngt: DateTime
+  gte: DateTime
+  ngte: DateTime
+  lt: DateTime
+  nlt: DateTime
+  lte: DateTime
+  nlte: DateTime
+}
+
+enum SortEnumType {
+  ASC
+  DESC
+}
+
+"""
+Information about the offset pagination.
+"""
+type CollectionSegmentInfo {
+  """
+  Indicates whether more items exist following the set defined by the clients arguments.
+  """
+  hasNextPage: Boolean!
+
+  """
+  Indicates whether more items exist prior the set defined by the clients arguments.
+  """
+  hasPreviousPage: Boolean!
+}
+
+input ProductTypeOperationFilterInput {
+  eq: ProductType
+  neq: ProductType
+  in: [ProductType!]
+  nin: [ProductType!]
+}
+
+input ComparableDoubleOperationFilterInput {
+  eq: Float
+  neq: Float
+  in: [Float!]
+  nin: [Float!]
+  gt: Float
+  ngt: Float
+  gte: Float
+  ngte: Float
+  lt: Float
+  nlt: Float
+  lte: Float
+  nlte: Float
+}
+
+input ListFilterInputTypeOfTazworkOrderFilterInput {
+  all: TazworkOrderFilterInput
+  none: TazworkOrderFilterInput
+  some: TazworkOrderFilterInput
+  any: Boolean
+}
+
+input OrderStatusOperationFilterInput {
+  eq: OrderStatus
+  neq: OrderStatus
+  in: [OrderStatus!]
+  nin: [OrderStatus!]
+}
+
+input UserCourseStatusOperationFilterInput {
+  eq: UserCourseStatus
+  neq: UserCourseStatus
+  in: [UserCourseStatus!]
+  nin: [UserCourseStatus!]
+}
+
+input ListFilterInputTypeOfCourseTranslateFilterInput {
+  all: CourseTranslateFilterInput
+  none: CourseTranslateFilterInput
+  some: CourseTranslateFilterInput
+  any: Boolean
+}
+
+input ListFilterInputTypeOfCourseQuestionAnswerFilterInput {
+  all: CourseQuestionAnswerFilterInput
+  none: CourseQuestionAnswerFilterInput
+  some: CourseQuestionAnswerFilterInput
+  any: Boolean
+}
+
+input ListFilterInputTypeOfCourseQuestionFilterInput {
+  all: CourseQuestionFilterInput
+  none: CourseQuestionFilterInput
+  some: CourseQuestionFilterInput
+  any: Boolean
+}
+
+input MediaTypeOperationFilterInput {
+  eq: MediaType
+  neq: MediaType
+  in: [MediaType!]
+  nin: [MediaType!]
+}
+
+input ListFilterInputTypeOfUserCourseFilterInput {
+  all: UserCourseFilterInput
+  none: UserCourseFilterInput
+  some: UserCourseFilterInput
+  any: Boolean
+}
+
+input LanguageTypeOperationFilterInput {
+  eq: LanguageType
+  neq: LanguageType
+  in: [LanguageType!]
+  nin: [LanguageType!]
+}
+
+input ComparableNullableOfInt32OperationFilterInput {
+  eq: Int
+  neq: Int
+  in: [Int]
+  nin: [Int]
+  gt: Int
+  ngt: Int
+  gte: Int
+  ngte: Int
+  lt: Int
+  nlt: Int
+  lte: Int
+  nlte: Int
+}
+
+input CourseStatusOperationFilterInput {
+  eq: CourseStatus
+  neq: CourseStatus
+  in: [CourseStatus!]
+  nin: [CourseStatus!]
+}
+
+input SpanishTranslateStatusOperationFilterInput {
+  eq: SpanishTranslateStatus
+  neq: SpanishTranslateStatus
+  in: [SpanishTranslateStatus!]
+  nin: [SpanishTranslateStatus!]
+}
+
+input ListFilterInputTypeOfSlideFilterInput {
+  all: SlideFilterInput
+  none: SlideFilterInput
+  some: SlideFilterInput
+  any: Boolean
+}
+
+input FlaggedContentTypeOperationFilterInput {
+  eq: FlaggedContentType
+  neq: FlaggedContentType
+  in: [FlaggedContentType!]
+  nin: [FlaggedContentType!]
+}
+
+input ProjectFilterInput {
+  and: [ProjectFilterInput!]
+  or: [ProjectFilterInput!]
+  isDeletedAccount: BooleanOperationFilterInput
+  deleteAccountDate: ComparableDateTimeOperationFilterInput
+  projectStatus: ProjectStatusOperationFilterInput
+  title: StringOperationFilterInput
+  description: StringOperationFilterInput
+  duration: StringOperationFilterInput
+  availability: AvailabilityOperationFilterInput
+  addressTitle: StringOperationFilterInput
+  streetAddress: StringOperationFilterInput
+  city: StringOperationFilterInput
+  state: StringOperationFilterInput
+  cover: StringOperationFilterInput
+  backgroundCheckTypeForDoer: NullableOfBackgroundCheckTypeForDoerOperationFilterInput
+  projectDeadLine: ComparableDateTimeOperationFilterInput
+  startDate: ComparableDateTimeOperationFilterInput
+  endDate: ComparableDateTimeOperationFilterInput
+  latestPaymentDateTime: ComparableNullableOfDateTimeOperationFilterInput
+  longitude: ComparableDoubleOperationFilterInput
+  latitude: ComparableDoubleOperationFilterInput
+  zipCode: StringOperationFilterInput
+  cancellRequestStatus: NullableOfCancellRequestStatusOperationFilterInput
+  latestCancellRequestDate: ComparableNullableOfDateTimeOperationFilterInput
+  latestCancellRequestConfirmationDate: ComparableNullableOfDateTimeOperationFilterInput
+  cancelProjectStatus: NullableOfCancelProjectStatusOperationFilterInput
+  cancellationReason: StringOperationFilterInput
+  category: CategoryFilterInput
+  categoryId: ComparableNullableOfInt32OperationFilterInput
+  bids: ListFilterInputTypeOfBidFilterInput
+  questions: ListFilterInputTypeOfQuestionFilterInput
+  projectImages: ListFilterInputTypeOfProjectImagesFilterInput
+  userLikeProjects: ListFilterInputTypeOfUserLikeProjectFilterInput
+  notifications: ListFilterInputTypeOfNotificationFilterInput
+  conversations: ListFilterInputTypeOfConversationsFilterInput
+  registeredUserByReferalls: ListFilterInputTypeOfRegisteredUserByReferallFilterInput
+  projectQuestions: ListFilterInputTypeOfProjectQuestionFilterInput
+  flaggedContents: ListFilterInputTypeOfFlaggedContentFilterInput
+  userId: ComparableInt32OperationFilterInput
+  user: UsersFilterInput
+  id: ComparableInt32OperationFilterInput
+  isDeleted: BooleanOperationFilterInput
+  createdDate: ComparableDateTimeOperationFilterInput
+}
+
+input QuestionFilterInput {
+  and: [QuestionFilterInput!]
+  or: [QuestionFilterInput!]
+  isDeletedAccount: BooleanOperationFilterInput
+  deleteAccountDate: ComparableDateTimeOperationFilterInput
+  text: StringOperationFilterInput
+  isIllegal: BooleanOperationFilterInput
+  isPin: BooleanOperationFilterInput
+  upVote: ComparableInt32OperationFilterInput
+  isEdited: BooleanOperationFilterInput
+  editedDate: ComparableDateTimeOperationFilterInput
+  parentQuestion: QuestionFilterInput
+  parentId: ComparableNullableOfInt32OperationFilterInput
+  childrenQuestions: ListFilterInputTypeOfQuestionFilterInput
+  project: ProjectFilterInput
+  projectId: ComparableInt32OperationFilterInput
+  userId: ComparableInt32OperationFilterInput
+  user: UsersFilterInput
+  id: ComparableInt32OperationFilterInput
+  isDeleted: BooleanOperationFilterInput
+  createdDate: ComparableDateTimeOperationFilterInput
+}
+
+input ProjectSortInput {
+  isDeletedAccount: SortEnumType
+  deleteAccountDate: SortEnumType
+  projectStatus: SortEnumType
+  title: SortEnumType
+  description: SortEnumType
+  duration: SortEnumType
+  availability: SortEnumType
+  addressTitle: SortEnumType
+  streetAddress: SortEnumType
+  city: SortEnumType
+  state: SortEnumType
+  cover: SortEnumType
+  backgroundCheckTypeForDoer: SortEnumType
+  projectDeadLine: SortEnumType
+  startDate: SortEnumType
+  endDate: SortEnumType
+  latestPaymentDateTime: SortEnumType
+  longitude: SortEnumType
+  latitude: SortEnumType
+  zipCode: SortEnumType
+  cancellRequestStatus: SortEnumType
+  latestCancellRequestDate: SortEnumType
+  latestCancellRequestConfirmationDate: SortEnumType
+  cancelProjectStatus: SortEnumType
+  cancellationReason: SortEnumType
+  category: CategorySortInput
+  categoryId: SortEnumType
+  userId: SortEnumType
+  user: UsersSortInput
+  id: SortEnumType
+  isDeleted: SortEnumType
+  createdDate: SortEnumType
+}
+
+input QuestionSortInput {
+  isDeletedAccount: SortEnumType
+  deleteAccountDate: SortEnumType
+  text: SortEnumType
+  isIllegal: SortEnumType
+  isPin: SortEnumType
+  upVote: SortEnumType
+  isEdited: SortEnumType
+  editedDate: SortEnumType
+  parentQuestion: QuestionSortInput
+  parentId: SortEnumType
+  project: ProjectSortInput
+  projectId: SortEnumType
+  userId: SortEnumType
+  user: UsersSortInput
+  id: SortEnumType
+  isDeleted: SortEnumType
+  createdDate: SortEnumType
+}
+
+input ComparableNullableOfDoubleOperationFilterInput {
+  eq: Float
+  neq: Float
+  in: [Float]
+  nin: [Float]
+  gt: Float
+  ngt: Float
+  gte: Float
+  ngte: Float
+  lt: Float
+  nlt: Float
+  lte: Float
+  nlte: Float
+}
+
+input LeaderBoardTypeOperationFilterInput {
+  eq: LeaderBoardType
+  neq: LeaderBoardType
+  in: [LeaderBoardType!]
+  nin: [LeaderBoardType!]
+}
+
+input UserUsedCouponFilterInput {
+  and: [UserUsedCouponFilterInput!]
+  or: [UserUsedCouponFilterInput!]
+  coupon: CouponFilterInput
+  couponId: ComparableInt32OperationFilterInput
+  bid: BidFilterInput
+  bidId: ComparableNullableOfInt32OperationFilterInput
+  discountedAmount: ComparableNullableOfDoubleOperationFilterInput
+  percent: ComparableNullableOfDoubleOperationFilterInput
+  userId: ComparableInt32OperationFilterInput
+  user: UsersFilterInput
+  id: ComparableInt32OperationFilterInput
+  isDeleted: BooleanOperationFilterInput
+  createdDate: ComparableDateTimeOperationFilterInput
+}
+
+input UserUsedCouponSortInput {
+  coupon: CouponSortInput
+  couponId: SortEnumType
+  bid: BidSortInput
+  bidId: SortEnumType
+  discountedAmount: SortEnumType
+  percent: SortEnumType
+  userId: SortEnumType
+  user: UsersSortInput
+  id: SortEnumType
+  isDeleted: SortEnumType
+  createdDate: SortEnumType
+}
+
+input CouponFilterInput {
+  and: [CouponFilterInput!]
+  or: [CouponFilterInput!]
+  title: StringOperationFilterInput
+  code: StringOperationFilterInput
+  expirationDate: ComparableDateTimeOperationFilterInput
+  percent: ComparableDoubleOperationFilterInput
+  maximumDiscountAmount: ComparableNullableOfDoubleOperationFilterInput
+  userlimits: ComparableInt32OperationFilterInput
+  admin: UsersFilterInput
+  adminId: ComparableInt32OperationFilterInput
+  isActive: BooleanOperationFilterInput
+  userUsedCoupons: ListFilterInputTypeOfUserUsedCouponFilterInput
+  id: ComparableInt32OperationFilterInput
+  isDeleted: BooleanOperationFilterInput
+  createdDate: ComparableDateTimeOperationFilterInput
+}
+
+input CouponSortInput {
+  title: SortEnumType
+  code: SortEnumType
+  expirationDate: SortEnumType
+  percent: SortEnumType
+  maximumDiscountAmount: SortEnumType
+  userlimits: SortEnumType
+  admin: UsersSortInput
+  adminId: SortEnumType
+  isActive: SortEnumType
+  id: SortEnumType
+  isDeleted: SortEnumType
+  createdDate: SortEnumType
+}
+
+input ListStringOperationFilterInput {
+  all: StringOperationFilterInput
+  none: StringOperationFilterInput
+  some: StringOperationFilterInput
+  any: Boolean
+}
+
+input ComparableInt64OperationFilterInput {
+  eq: Long
+  neq: Long
+  in: [Long!]
+  nin: [Long!]
+  gt: Long
+  ngt: Long
+  gte: Long
+  ngte: Long
+  lt: Long
+  nlt: Long
+  lte: Long
+  nlte: Long
+}
+
+input DictionaryOfStringAndStringFilterInput {
+  and: [DictionaryOfStringAndStringFilterInput!]
+  or: [DictionaryOfStringAndStringFilterInput!]
+  comparer: IEqualityComparerOfStringFilterInput
+  count: ComparableInt32OperationFilterInput
+  keys: ListStringOperationFilterInput
+  values: ListStringOperationFilterInput
+}
+
+input PaymentStatusOperationFilterInput {
+  eq: PaymentStatus
+  neq: PaymentStatus
+  in: [PaymentStatus!]
+  nin: [PaymentStatus!]
+}
+
+input PaymentConfirmationStatusOperationFilterInput {
+  eq: PaymentConfirmationStatus
+  neq: PaymentConfirmationStatus
+  in: [PaymentConfirmationStatus!]
+  nin: [PaymentConfirmationStatus!]
+}
+
+input BidStatusOperationFilterInput {
+  eq: BidStatus
+  neq: BidStatus
+  in: [BidStatus!]
+  nin: [BidStatus!]
+}
+
+input NullableOfCancellRequestStatusOperationFilterInput {
+  eq: CancellRequestStatus
+  neq: CancellRequestStatus
+  in: [CancellRequestStatus]
+  nin: [CancellRequestStatus]
+}
+
+input ComparableNullableOfDateTimeOperationFilterInput {
+  eq: DateTime
+  neq: DateTime
+  in: [DateTime]
+  nin: [DateTime]
+  gt: DateTime
+  ngt: DateTime
+  gte: DateTime
+  ngte: DateTime
+  lt: DateTime
+  nlt: DateTime
+  lte: DateTime
+  nlte: DateTime
+}
+
+input NullableOfCancelBidTypeOperationFilterInput {
+  eq: CancelBidType
+  neq: CancelBidType
+  in: [CancelBidType]
+  nin: [CancelBidType]
+}
+
+input ListFilterInputTypeOfPaymentFilterInput {
+  all: PaymentFilterInput
+  none: PaymentFilterInput
+  some: PaymentFilterInput
+  any: Boolean
+}
+
+input ListFilterInputTypeOfNotificationFilterInput {
+  all: NotificationFilterInput
+  none: NotificationFilterInput
+  some: NotificationFilterInput
+  any: Boolean
+}
+
+input ListFilterInputTypeOfBidAnswerToQuestionFilterInput {
+  all: BidAnswerToQuestionFilterInput
+  none: BidAnswerToQuestionFilterInput
+  some: BidAnswerToQuestionFilterInput
+  any: Boolean
+}
+
+input ProjectStatusOperationFilterInput {
+  eq: ProjectStatus
+  neq: ProjectStatus
+  in: [ProjectStatus!]
+  nin: [ProjectStatus!]
+}
+
+input ListFilterInputTypeOfBidFilterInput {
+  all: BidFilterInput
+  none: BidFilterInput
+  some: BidFilterInput
+  any: Boolean
+}
+
+input LowestBidDtoFilterInput {
+  and: [LowestBidDtoFilterInput!]
+  or: [LowestBidDtoFilterInput!]
+  bidId: ComparableInt32OperationFilterInput
+  bidStatus: BidStatusOperationFilterInput
+  bidAmount: ComparableDoubleOperationFilterInput
+  bidDescription: StringOperationFilterInput
+  huduerId: ComparableInt32OperationFilterInput
+  huduerUsername: StringOperationFilterInput
+  huduerEmail: StringOperationFilterInput
+}
+
+input LowestBidDtoSortInput {
+  bidId: SortEnumType
+  bidStatus: SortEnumType
+  bidAmount: SortEnumType
+  bidDescription: SortEnumType
+  huduerId: SortEnumType
+  huduerUsername: SortEnumType
+  huduerEmail: SortEnumType
+}
+
+input NotificationTypeOperationFilterInput {
+  eq: NotificationType
+  neq: NotificationType
+  in: [NotificationType!]
+  nin: [NotificationType!]
+}
+
+input ConversationsFilterInput {
+  and: [ConversationsFilterInput!]
+  or: [ConversationsFilterInput!]
+  firstUserId: ComparableNullableOfInt32OperationFilterInput
+  secondUserId: ComparableNullableOfInt32OperationFilterInput
+  isFirstUserDeletedAccount: BooleanOperationFilterInput
+  firstUserDeleteAccountDate: ComparableDateTimeOperationFilterInput
+  isSecondUserDeletedAccount: BooleanOperationFilterInput
+  secondUserDeleteAccountDate: ComparableDateTimeOperationFilterInput
+  subject: StringOperationFilterInput
+  project: ProjectFilterInput
+  projectId: ComparableNullableOfInt32OperationFilterInput
+  isGroup: BooleanOperationFilterInput
+  groupImage: StringOperationFilterInput
+  groupName: StringOperationFilterInput
+  groupDescription: StringOperationFilterInput
+  userGroups: ListFilterInputTypeOfUserMessageGroupFilterInput
+  firstUser: UsersFilterInput
+  secondUser: UsersFilterInput
+  firstUnreadCount: ComparableInt32OperationFilterInput
+  secondUnreadCount: ComparableInt32OperationFilterInput
+  latestMessageDate: ComparableDateTimeOperationFilterInput
+  messages: ListFilterInputTypeOfMessagesFilterInput
+  id: ComparableInt32OperationFilterInput
+  isDeleted: BooleanOperationFilterInput
+  createdDate: ComparableDateTimeOperationFilterInput
+}
+
+input ConversationsSortInput {
+  firstUserId: SortEnumType
+  secondUserId: SortEnumType
+  isFirstUserDeletedAccount: SortEnumType
+  firstUserDeleteAccountDate: SortEnumType
+  isSecondUserDeletedAccount: SortEnumType
+  secondUserDeleteAccountDate: SortEnumType
+  subject: SortEnumType
+  project: ProjectSortInput
+  projectId: SortEnumType
+  isGroup: SortEnumType
+  groupImage: SortEnumType
+  groupName: SortEnumType
+  groupDescription: SortEnumType
+  firstUser: UsersSortInput
+  secondUser: UsersSortInput
+  firstUnreadCount: SortEnumType
+  secondUnreadCount: SortEnumType
+  latestMessageDate: SortEnumType
+  id: SortEnumType
+  isDeleted: SortEnumType
+  createdDate: SortEnumType
+}
+
+input MessageTypesOperationFilterInput {
+  eq: MessageTypes
+  neq: MessageTypes
+  in: [MessageTypes!]
+  nin: [MessageTypes!]
+}
+
+input EmailTemplateTypeOperationFilterInput {
+  eq: EmailTemplateType
+  neq: EmailTemplateType
+  in: [EmailTemplateType!]
+  nin: [EmailTemplateType!]
+}
+
+input UserTypesOperationFilterInput {
+  eq: UserTypes
+  neq: UserTypes
+  in: [UserTypes!]
+  nin: [UserTypes!]
+}
+
+input ComparableNullableOfDecimalOperationFilterInput {
+  eq: Decimal
+  neq: Decimal
+  in: [Decimal]
+  nin: [Decimal]
+  gt: Decimal
+  ngt: Decimal
+  gte: Decimal
+  ngte: Decimal
+  lt: Decimal
+  nlt: Decimal
+  lte: Decimal
+  nlte: Decimal
+}
+
+input ListFilterInputTypeOfUserUsedCouponFilterInput {
+  all: UserUsedCouponFilterInput
+  none: UserUsedCouponFilterInput
+  some: UserUsedCouponFilterInput
+  any: Boolean
+}
+
+input ListFilterInputTypeOfUserImageFilterInput {
+  all: UserImageFilterInput
+  none: UserImageFilterInput
+  some: UserImageFilterInput
+  any: Boolean
+}
+
+input BackgroundCheckStatusOperationFilterInput {
+  eq: BackgroundCheckStatus
+  neq: BackgroundCheckStatus
+  in: [BackgroundCheckStatus!]
+  nin: [BackgroundCheckStatus!]
+}
+
+input ListFilterInputTypeOfCourseFilterInput {
+  all: CourseFilterInput
+  none: CourseFilterInput
+  some: CourseFilterInput
+  any: Boolean
+}
+
+input AvailabilityOperationFilterInput {
+  eq: Availability
+  neq: Availability
+  in: [Availability!]
+  nin: [Availability!]
+}
+
+input NullableOfBackgroundCheckTypeForDoerOperationFilterInput {
+  eq: BackgroundCheckTypeForDoer
+  neq: BackgroundCheckTypeForDoer
+  in: [BackgroundCheckTypeForDoer]
+  nin: [BackgroundCheckTypeForDoer]
+}
+
+input NullableOfCancelProjectStatusOperationFilterInput {
+  eq: CancelProjectStatus
+  neq: CancelProjectStatus
+  in: [CancelProjectStatus]
+  nin: [CancelProjectStatus]
+}
+
+input ListFilterInputTypeOfQuestionFilterInput {
+  all: QuestionFilterInput
+  none: QuestionFilterInput
+  some: QuestionFilterInput
+  any: Boolean
+}
+
+input ListFilterInputTypeOfProjectImagesFilterInput {
+  all: ProjectImagesFilterInput
+  none: ProjectImagesFilterInput
+  some: ProjectImagesFilterInput
+  any: Boolean
+}
+
+input ListFilterInputTypeOfUserLikeProjectFilterInput {
+  all: UserLikeProjectFilterInput
+  none: UserLikeProjectFilterInput
+  some: UserLikeProjectFilterInput
+  any: Boolean
+}
+
+input ListFilterInputTypeOfConversationsFilterInput {
+  all: ConversationsFilterInput
+  none: ConversationsFilterInput
+  some: ConversationsFilterInput
+  any: Boolean
+}
+
+input ListFilterInputTypeOfRegisteredUserByReferallFilterInput {
+  all: RegisteredUserByReferallFilterInput
+  none: RegisteredUserByReferallFilterInput
+  some: RegisteredUserByReferallFilterInput
+  any: Boolean
+}
+
+input ListFilterInputTypeOfProjectQuestionFilterInput {
+  all: ProjectQuestionFilterInput
+  none: ProjectQuestionFilterInput
+  some: ProjectQuestionFilterInput
+  any: Boolean
+}
+
+input ListFilterInputTypeOfFlaggedContentFilterInput {
+  all: FlaggedContentFilterInput
+  none: FlaggedContentFilterInput
+  some: FlaggedContentFilterInput
+  any: Boolean
+}
+
+input IEqualityComparerOfStringFilterInput {
+  and: [IEqualityComparerOfStringFilterInput!]
+  or: [IEqualityComparerOfStringFilterInput!]
+}
+
+input BidAnswerToQuestionFilterInput {
+  and: [BidAnswerToQuestionFilterInput!]
+  or: [BidAnswerToQuestionFilterInput!]
+  question: StringOperationFilterInput
+  answer: StringOperationFilterInput
+  bid: BidFilterInput
+  bidId: ComparableInt32OperationFilterInput
+  id: ComparableInt32OperationFilterInput
+  isDeleted: BooleanOperationFilterInput
+  createdDate: ComparableDateTimeOperationFilterInput
+}
+
+input ListFilterInputTypeOfUserMessageGroupFilterInput {
+  all: UserMessageGroupFilterInput
+  none: UserMessageGroupFilterInput
+  some: UserMessageGroupFilterInput
+  any: Boolean
+}
+
+input ListFilterInputTypeOfMessagesFilterInput {
+  all: MessagesFilterInput
+  none: MessagesFilterInput
+  some: MessagesFilterInput
+  any: Boolean
+}
+
+input ProjectQuestionFilterInput {
+  and: [ProjectQuestionFilterInput!]
+  or: [ProjectQuestionFilterInput!]
+  question: StringOperationFilterInput
+  projectId: ComparableNullableOfInt32OperationFilterInput
+}
+
+input SubCategoryInput {
+  text: String!
+  spanishText: String!
+}
+
+input KeyValuePairOfStringAndStringInput {
+  key: String!
+  value: String!
+}
+
+input BidAnswerToQuestionInput {
+  question: String
+  answer: String
+}
+
+input ProjectQuestionInput {
+  question: String
+  projectId: Int
+}
+
+input ProjectImagesInput {
+  imageAddress: String
+  alt: String
+}
+
+input BidOrderVMInput {
+  bidStatus: BidStatus!
+  order: Int!
+}
+
+type KeyValuePairOfBidStatusAndInt32 {
+  key: BidStatus!
+  value: Int!
+}
